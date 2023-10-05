@@ -1,0 +1,17 @@
+/* Define the custom plus-button style */
+.plus-button {
+    width: 25px;
+    height: 25px;
+    background-color: #4CAF50; /* Change the background color as needed */
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+/* Style the button on hover for feedback */
+.plus-button:hover {
+    background-color: #45a049; /* Change the hover color as needed */
+}
