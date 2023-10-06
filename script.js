@@ -67,8 +67,10 @@ document.addEventListener("DOMContentLoaded", function () {
   // Add the event listener for the new Generate SKUs button
   getElement("generateSKUs").addEventListener("click", function () {
     generateSKUs(products);
+    updateTable(); // Update the table to include generated SKUs
   });
 
+  // Function to generate SKUs
   function generateSKUs(products) {
     let skuNumber = 1; // Initialize the SKU number
     products.forEach(product => {
@@ -134,7 +136,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Function to update the table
-  function updateTable() {
+function updateTable() {
     submissionBody.innerHTML = "";
     products.forEach((product, index) => {
       const row = document.createElement("tr");
@@ -146,9 +148,9 @@ document.addEventListener("DOMContentLoaded", function () {
         <td>${product.price}</td>
         <td>${product.cost}</td>
         <td>${product.grams}</td>
+        <td>${product.sku || "N/A"}</td>
       `;
       submissionBody.appendChild(row);
     });
     submissionTable.style.display = "block";
   }
-});
