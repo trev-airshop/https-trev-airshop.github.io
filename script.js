@@ -163,14 +163,14 @@ document.addEventListener("DOMContentLoaded", function () {
     products.forEach((product, index) => {
       const row = document.createElement("tr");
       row.innerHTML = `
-        <td>${product.vendor}</td>
-        <td>${product.productName}</td>
-        <td>${product.color}</td>
-        <td>${product.size}</td>
-        <td>${product.price}</td>
-        <td>${product.cost}</td>
-        <td>${product.grams}</td>
-        <td>${product.sku}</td> <!-- New column for SKU -->
+        <td>${product.vendor || ""}</td>
+        <td>${product.productName || ""}</td>
+        <td>${product.color || ""}</td>
+        <td>${product.size || ""}</td>
+        <td>${product.price|| ""}</td>
+        <td>${product.cost|| ""}</td>
+        <td>${product.grams|| ""}</td>
+        <td>${product.sku|| ""}</td> 
       `;
       submissionBody.appendChild(row);
     });
