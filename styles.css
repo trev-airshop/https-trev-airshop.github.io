@@ -29,3 +29,13 @@ th, td {
   padding: 10px;
   text-align: left;
 }
+
+#addBlankRowButton {
+  opacity: 0.3;
+  transition: opacity 0.5s ease;
+}
+
+#submissionBody tr:last-child:hover + #addBlankRowButton,
+#addBlankRowButton:hover {
+  opacity: 1;
+}
