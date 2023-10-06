@@ -231,6 +231,8 @@ addBlankRowButton.addEventListener("click", function() {
 
   // Append the row to the table
   submissionBody.appendChild(row);
+
+  updateTable();
 });
 
 });
