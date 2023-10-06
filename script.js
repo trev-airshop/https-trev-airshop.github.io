@@ -159,31 +159,29 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Function to update the table
   function updateTable() {
     submissionBody.innerHTML = "";
     products.forEach((product, index) => {
       const row = document.createElement("tr");
       row.innerHTML = `
-      <td contentEditable="true">${product.vendor || ""}</td>
-      <td contentEditable="true">${product.productName || ""}</td>
-      <td contentEditable="true">${product.productType || ""}</td>
-      <td contentEditable="true">${product.color || ""}</td>
-      <td contentEditable="true">${product.size || ""}</td>
-      <td contentEditable="true">${product.price || ""}</td>
-      <td contentEditable="true">${product.cost || ""}</td>
-      <td contentEditable="true">${product.grams || ""}</td>
-      <td contentEditable="true">${product.sku || ""}</td> 
-    `;
-    submissionBody.appendChild(row);
-  });
-  submissionTable.style.display = "block";
-}
-
+        <td contentEditable="true">${product.vendor || ""}</td>
+        <td contentEditable="true">${product.productName || ""}</td>
+        <td contentEditable="true">${product.productType || ""}</td>
+        <td contentEditable="true">${product.color || ""}</td>
+        <td contentEditable="true">${product.size || ""}</td>
+        <td contentEditable="true">${product.price || ""}</td>
+        <td contentEditable="true">${product.cost || ""}</td>
+        <td contentEditable="true">${product.grams || ""}</td>
+        <td contentEditable="true">${product.sku || ""}</td> 
       `;
       submissionBody.appendChild(row);
     });
     submissionTable.style.display = "block";
   }
 });
+
+
+
+
+
 
