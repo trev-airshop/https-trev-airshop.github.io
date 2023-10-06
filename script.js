@@ -23,9 +23,6 @@ document.addEventListener("DOMContentLoaded", function () {
     sizeVariantsContainer.appendChild(priceInput);
     sizeVariantsContainer.appendChild(costInput);
     sizeVariantsContainer.appendChild(gramsInput);
-
-    // Show the "Grams" input when adding size variants
-    gramsInput.style.display = "block";
   });
 
   getElement("submitProduct").addEventListener("click", function () {
@@ -66,6 +63,30 @@ document.addEventListener("DOMContentLoaded", function () {
   getElement("downloadCSV").addEventListener("click", function () {
     downloadCSV(products);
   });
+
+  // Add the event listener for the new Generate SKUs button
+  getElement("generateSKUs").addEventListener("click", function () {
+    generateSKUs(products);
+  });
+
+  function generateSKUs(products) {
+    let skuNumber = 1; // Initialize the SKU number
+    products.forEach(product => {
+      let prefix = 'SHELF-';
+      let skuType;
+      
+      if (product.price > 0 && product.size !== "premium") {
+        skuType = `${product.vendor}-` + skuNumber.toString().padStart(6, '0');
+      } else if (product.size === "premium") {
+        skuType = `demand-premium—${product.vendor}-` + skuNumber.toString().padStart(6, '0');
+      } else {
+        skuType = `demand-${product.vendor}-` + skuNumber.toString().padStart(6, '0');
+      }
+
+      const sku = prefix + skuType;
+      product.sku = sku;
+    });
+  }
 
   // Function to download the CSV file
   function downloadCSV(data) {
@@ -131,6 +152,3 @@ document.addEventListener("DOMContentLoaded", function () {
     submissionTable.style.display = "block";
   }
 });
-
-
-
