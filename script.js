@@ -165,12 +165,6 @@ document.addEventListener("DOMContentLoaded", function () {
     products.forEach((product, index) => {
       const row = document.createElement("tr");
       row.innerHTML = `
-// Function to update the table
-function updateTable() {
-  submissionBody.innerHTML = "";
-  products.forEach((product, index) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
       <td contentEditable="true">${product.vendor || ""}</td>
       <td contentEditable="true">${product.productName || ""}</td>
       <td contentEditable="true">${product.productType || ""}</td>
