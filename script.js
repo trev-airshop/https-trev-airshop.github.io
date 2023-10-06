@@ -163,4 +163,5 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     submissionTable.style.display = "block";
   }
+});
 
