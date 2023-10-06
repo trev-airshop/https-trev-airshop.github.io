@@ -196,7 +196,7 @@ function updateTable() {
 
 // Add "Add Blank Row" button
 const addBlankRowButton = document.createElement("button");
-// Existing code for adding a blank row
+document.body.appendChild(addBlankRowButton);
 addBlankRowButton.addEventListener("click", function() {
   // Create a blank product object with all keys but empty values
   const blankProduct = {
