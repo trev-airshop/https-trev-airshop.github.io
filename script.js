@@ -165,6 +165,7 @@ document.addEventListener("DOMContentLoaded", function () {
       row.innerHTML = `
         <td>${product.vendor || ""}</td>
         <td>${product.productName || ""}</td>
+        <td>${product.productType || ""}</td>
         <td>${product.color || ""}</td>
         <td>${product.size || ""}</td>
         <td>${product.price|| ""}</td>
