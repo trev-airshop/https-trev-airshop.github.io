@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // This object will keep track of SKU numbers for each vendor.
   };
 
-  getElement("generateSkus").addEventListener("click", function () {
+  getElement("generateSKUs").addEventListener("click", function () {
     // Reset the SKU counter
     skuCounter = {};
   
