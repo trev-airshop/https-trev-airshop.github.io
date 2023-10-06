@@ -15,3 +15,17 @@
 .plus-button:hover {
     background-color: #45a049; /* Change the hover color as needed */
 }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table, th, td {
+  border: 1px solid black;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+}
