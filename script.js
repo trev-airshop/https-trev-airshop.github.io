@@ -196,15 +196,43 @@ function updateTable() {
 
 // Add "Add Blank Row" button
 const addBlankRowButton = document.createElement("button");
-addBlankRowButton.innerText = "Add Blank Row";
+// Existing code for adding a blank row
 addBlankRowButton.addEventListener("click", function() {
-  products.push({});
-  updateTable();
-});
-document.body.appendChild(addBlankRowButton);
+  // Create a blank product object with all keys but empty values
+  const blankProduct = {
+    vendor: "",
+    productName: "",
+    productType: "",
+    color: "",
+    size: "",
+    price: "",
+    cost: "",
+    grams: "",
+    sku: ""
+  };
 
+  // Add it to the products array
+  products.push(blankProduct);
 
+  // Create a new row and populate it with editable, empty cells
+  const row = document.createElement("tr");
+  Object.keys(blankProduct).forEach((key) => {
+    const cell = document.createElement("td");
+    cell.contentEditable = "true";
+    cell.innerText = "";
+    
+    // Update the 'products' array when the cell content changes
+    cell.addEventListener("input", function() {
+      blankProduct[key] = cell.innerText;
+    });
+
+    row.appendChild(cell);
+  });
+
+  // Append the row to the table
+  submissionBody.appendChild(row);
 });
+
 
 
 
