@@ -159,11 +159,11 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
- function updateTable() {
+function updateTable() {
   submissionBody.innerHTML = "";
   products.forEach((product, index) => {
     const row = document.createElement("tr");
-
+    
     // Create individual cells
     Object.keys(product).forEach((key) => {
       const cell = document.createElement("td");
@@ -178,10 +178,31 @@ document.addEventListener("DOMContentLoaded", function () {
       row.appendChild(cell);
     });
 
+    // Add Delete button to the row
+    const deleteButton = document.createElement("button");
+    deleteButton.innerText = "Delete";
+    deleteButton.addEventListener("click", function() {
+      row.remove();
+      products.splice(index, 1);
+      updateTable();
+    });
+    row.appendChild(deleteButton);
+
     submissionBody.appendChild(row);
   });
+
   submissionTable.style.display = "block";
 }
+
+// Add "Add Blank Row" button
+const addBlankRowButton = document.createElement("button");
+addBlankRowButton.innerText = "Add Blank Row";
+addBlankRowButton.addEventListener("click", function() {
+  products.push({});
+  updateTable();
+});
+document.body.appendChild(addBlankRowButton);
+
 
 });
 
