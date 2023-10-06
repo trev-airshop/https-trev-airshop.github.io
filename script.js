@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const submissionTable = getElement("submissionTable");
   const submissionBody = getElement("submissionBody");
   const products = []; // Array to store product data
+  let skuCounter = 1; // Initialize SKU counter
 
   addColorVariantButton.addEventListener("click", function () {
     const colorInput = createInput("text", "color", "Color");
@@ -18,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const priceInput = createInput("text", "price", "Price");
     const costInput = createInput("text", "cost", "Cost");
     const gramsInput = createInput("text", "grams", "Grams");
-
+    
     sizeVariantsContainer.appendChild(sizeInput);
     sizeVariantsContainer.appendChild(priceInput);
     sizeVariantsContainer.appendChild(costInput);
@@ -26,6 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   getElement("submitProduct").addEventListener("click", function () {
+    // Gather data and create product object
     const vendor = getElement("vendor").value;
     const productName = getElement("product").value;
     const colorInputs = Array.from(document.getElementsByName("color"));
@@ -34,7 +36,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const costInputs = Array.from(document.getElementsByName("cost"));
     const gramsInputs = Array.from(document.getElementsByName("grams"));
 
-    // Generate rows for each variant combination
     for (let i = 0; i < (colorInputs.length || 1); i++) {
       for (let j = 0; j < sizeInputs.length; j++) {
         const size = sizeInputs[j].value || "N/A";
@@ -60,83 +61,20 @@ document.addEventListener("DOMContentLoaded", function () {
     updateTable();
   });
 
-  getElement("downloadCSV").addEventListener("click", function () {
-    downloadCSV(products);
-  });
-
-  // Add the event listener for the new Generate SKUs button
   getElement("generateSKUs").addEventListener("click", function () {
-    generateSKUs(products);
-    updateTable(); // Update the table to include generated SKUs
+    generateSKUs();
+    updateTable();
   });
 
-  // Function to generate SKUs
-  function generateSKUs(products) {
-    let skuNumber = 1; // Initialize the SKU number
-    products.forEach(product => {
-      let prefix = 'SHELF-';
-      let skuType;
-      
-      if (product.price > 0 && product.size !== "premium") {
-        skuType = `${product.vendor}-` + skuNumber.toString().padStart(6, '0');
-      } else if (product.size === "premium") {
-        skuType = `demand-premium—${product.vendor}-` + skuNumber.toString().padStart(6, '0');
-      } else {
-        skuType = `demand-${product.vendor}-` + skuNumber.toString().padStart(6, '0');
-      }
-
-      const sku = prefix + skuType;
-      product.sku = sku;
-    });
-  }
-
-  // Function to download the CSV file
-  function downloadCSV(data) {
-    const csv = convertToCSV(data);
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    if (link.download !== undefined) {
-      const url = URL.createObjectURL(blob);
-      link.setAttribute("href", url);
-      link.setAttribute("download", "products.csv");
-      link.style.visibility = "hidden";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-  }
-
-  // Function to convert an array of objects to CSV format
-  function convertToCSV(data) {
-    const header = Object.keys(data[0]).join(",");
-    const csvRows = data.map((row) => Object.values(row).join(","));
-    return [header, ...csvRows].join("\n");
-  }
-
-  // Function to create input elements
-  function createInput(type, name, placeholder) {
-    const input = document.createElement("input");
-    input.type = type;
-    input.name = name;
-    input.placeholder = placeholder;
-    return input;
-  }
-
-  // Function to reset the form
   function resetForm() {
+    // Clear the form fields
     getElement("vendor").value = "";
     getElement("product").value = "";
-    getElement("productType").value = "";
     colorVariantsContainer.innerHTML = "";
     sizeVariantsContainer.innerHTML = "";
-    const gramsInputs = Array.from(document.getElementsByName("grams"));
-    gramsInputs.forEach((input) => {
-      input.style.display = "none";
-    });
   }
 
-  // Function to update the table
-function updateTable() {
+  function updateTable() {
     submissionBody.innerHTML = "";
     products.forEach((product, index) => {
       const row = document.createElement("tr");
@@ -148,9 +86,31 @@ function updateTable() {
         <td>${product.price}</td>
         <td>${product.cost}</td>
         <td>${product.grams}</td>
-        <td>${product.sku || "N/A"}</td>
+        <td>${product.sku || ''}</td>
       `;
       submissionBody.appendChild(row);
     });
-    submissionTable.style.display = "block";
   }
+
+  function generateSKUs() {
+    products.forEach(product => {
+      if (product.price > 0 && product.size !== "premium") {
+        product.sku = `SHELF-${product.vendor}-${String(skuCounter).padStart(6, '0')}`;
+        skuCounter++;
+      } else if (product.size === "premium") {
+        product.sku = `SHELF-demand-premium-${product.vendor}-${String(skuCounter - 1).padStart(6, '0')}`;
+      } else {
+        product.sku = `SHELF-demand-${product.vendor}-${String(skuCounter - 1).padStart(6, '0')}`;
+      }
+    });
+  }
+
+  function createInput(type, name, placeholder) {
+    const input = document.createElement("input");
+    input.type = type;
+    input.name = name;
+    input.placeholder = placeholder;
+    return input;
+  }
+});
+
