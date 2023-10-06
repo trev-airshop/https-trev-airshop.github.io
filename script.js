@@ -197,6 +197,7 @@ function updateTable() {
 // Add "Add Blank Row" button
 const addBlankRowButton = document.getElementById("addBlankRowButton");
 addBlankRowButton.addEventListener("click", function() {
+  console.log("Button clicked"); 
   // Create a blank product object with all keys but empty values
   const blankProduct = {
     vendor: "",
@@ -209,9 +210,11 @@ addBlankRowButton.addEventListener("click", function() {
     grams: "",
     sku: ""
   };
-
+  console.log("Blank product created", blankProduct);
+  
   // Add it to the products array
   products.push(blankProduct);
+  console.log("Product pushed to products array", products);
 
   // Create a new row and populate it with editable, empty cells
   const row = document.createElement("tr");
