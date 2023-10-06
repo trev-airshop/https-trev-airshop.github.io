@@ -11,6 +11,20 @@
     cursor: pointer;
 }
 
+.delete-button {
+    width: 30px;
+    height: 30px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 18px;
+    line-height: 30px;
+    text-align: center;
+    cursor: pointer;
+}
+
+
 /* Style the button on hover for feedback */
 .plus-button:hover {
     background-color: #45a049; /* Change the hover color as needed */
