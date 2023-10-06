@@ -30,7 +30,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function addDeleteButtonToRow(row, index) {
   const deleteButton = document.createElement("button");
-  deleteButton.innerText = "Delete";
+  deleteButton.innerText = "-";
+  deleteButton.className = "delete-button";
   deleteButton.addEventListener("click", function() {
     row.remove();
     products.splice(index, 1);
