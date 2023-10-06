@@ -233,7 +233,7 @@ addBlankRowButton.addEventListener("click", function() {
   submissionBody.appendChild(row);
 });
 
-
+});
 
 
 
