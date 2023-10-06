@@ -159,25 +159,30 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  function updateTable() {
-    submissionBody.innerHTML = "";
-    products.forEach((product, index) => {
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td contentEditable="true">${product.vendor || ""}</td>
-        <td contentEditable="true">${product.productName || ""}</td>
-        <td contentEditable="true">${product.productType || ""}</td>
-        <td contentEditable="true">${product.color || ""}</td>
-        <td contentEditable="true">${product.size || ""}</td>
-        <td contentEditable="true">${product.price || ""}</td>
-        <td contentEditable="true">${product.cost || ""}</td>
-        <td contentEditable="true">${product.grams || ""}</td>
-        <td contentEditable="true">${product.sku || ""}</td> 
-      `;
-      submissionBody.appendChild(row);
+ function updateTable() {
+  submissionBody.innerHTML = "";
+  products.forEach((product, index) => {
+    const row = document.createElement("tr");
+
+    // Create individual cells
+    Object.keys(product).forEach((key) => {
+      const cell = document.createElement("td");
+      cell.contentEditable = "true";
+      cell.innerText = product[key] || "";
+      
+      // Update 'products' array when the cell content changes
+      cell.addEventListener("input", function() {
+        products[index][key] = cell.innerText;
+      });
+
+      row.appendChild(cell);
     });
-    submissionTable.style.display = "block";
-  }
+
+    submissionBody.appendChild(row);
+  });
+  submissionTable.style.display = "block";
+}
+
 });
 
 
