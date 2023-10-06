@@ -31,6 +31,22 @@ document.addEventListener("DOMContentLoaded", function () {
     let skuCounter = {
     // This object will keep track of SKU numbers for each vendor.
   };
+
+  getElement("generateSkus").addEventListener("click", function () {
+    // Reset the SKU counter
+    skuCounter = {};
+  
+    // Iterate over each product in the products array
+    for (let i = 0; i < products.length; i++) {
+      // Generate SKU for the product
+      const sku = generateSku(products[i]);
+      // Add SKU to the product
+      products[i]["sku"] = sku;
+    }
+  
+    // Update the table to show new SKUs
+    updateTable();
+  });
   
   function generateSku(product) {
     const vendor = product.vendor;
@@ -83,9 +99,6 @@ document.addEventListener("DOMContentLoaded", function () {
           cost: cost,
           grams: grams,
         };
-
-        const sku = generateSku(productData);
-        productData["sku"] = sku; // Add SKU to product data
         
         products.push(productData);
       }
