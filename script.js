@@ -76,6 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
   getElement("submitProduct").addEventListener("click", function () {
     const vendor = getElement("vendor").value;
     const productName = getElement("product").value;
+    const productType = getElement("productType").value; 
     const colorInputs = Array.from(document.getElementsByName("color"));
     const sizeInputs = Array.from(document.getElementsByName("size"));
     const priceInputs = Array.from(document.getElementsByName("price"));
@@ -93,6 +94,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const productData = {
           vendor: vendor,
           productName: productName,
+          productType: productType,
           color: colorInputs[i]?.value || "N/A",
           size: size,
           price: price,
