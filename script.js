@@ -28,7 +28,18 @@ document.addEventListener("DOMContentLoaded", function () {
     gramsInput.style.display = "block";
   });
 
-    let skuCounter = {
+  function addDeleteButtonToRow(row, index) {
+  const deleteButton = document.createElement("button");
+  deleteButton.innerText = "Delete";
+  deleteButton.addEventListener("click", function() {
+    row.remove();
+    products.splice(index, 1);
+    updateTable();
+  });
+  row.appendChild(deleteButton);
+}
+
+  let skuCounter = {
     // This object will keep track of SKU numbers for each vendor.
   };
 
@@ -178,16 +189,7 @@ function updateTable() {
       row.appendChild(cell);
     });
 
-    // Add Delete button to the row
-    const deleteButton = document.createElement("button");
-    deleteButton.innerText = "Delete";
-    deleteButton.addEventListener("click", function() {
-      row.remove();
-      products.splice(index, 1);
-      updateTable();
-    });
-    row.appendChild(deleteButton);
-
+    addDeleteButtonToRow(row, index); 
     submissionBody.appendChild(row);
   });
 
@@ -229,10 +231,10 @@ addBlankRowButton.addEventListener("click", function() {
     row.appendChild(cell);
   });
 
+  addDeleteButtonToRow(row, products.length - 1);
   // Append the row to the table
   submissionBody.appendChild(row);
 
-  updateTable();
 });
 
 });
