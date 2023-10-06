@@ -28,6 +28,35 @@ document.addEventListener("DOMContentLoaded", function () {
     gramsInput.style.display = "block";
   });
 
+    let skuCounter = {
+    // This object will keep track of SKU numbers for each vendor.
+  };
+  
+  function generateSku(product) {
+    const vendor = product.vendor;
+    let skuNumber;
+    if (!skuCounter[vendor]) {
+      skuCounter[vendor] = 1;
+    }
+  
+    if (product.price > 0 && product.size !== "premium") {
+      skuNumber = skuCounter[vendor];
+      skuCounter[vendor]++;
+    } else {
+      skuNumber = skuCounter[vendor] - 1;
+    }
+  
+    const skuNumberString = String(skuNumber).padStart(6, "0");
+  
+    if (product.price > 0 && product.size !== "premium") {
+      return `SHELF-${vendor}-${skuNumberString}`;
+    } else if (product.size === "premium") {
+      return `SHELF-demand-premium-${vendor}-${skuNumberString}`;
+    } else {
+      return `SHELF-demand-${vendor}-${skuNumberString}`;
+    }
+  }
+  
   getElement("submitProduct").addEventListener("click", function () {
     const vendor = getElement("vendor").value;
     const productName = getElement("product").value;
@@ -55,6 +84,9 @@ document.addEventListener("DOMContentLoaded", function () {
           grams: grams,
         };
 
+        const sku = generateSku(productData);
+        productData["sku"] = sku; // Add SKU to product data
+        
         products.push(productData);
       }
     }
@@ -125,10 +157,10 @@ document.addEventListener("DOMContentLoaded", function () {
         <td>${product.price}</td>
         <td>${product.cost}</td>
         <td>${product.grams}</td>
+        <td>${product.sku}</td> <!-- New column for SKU -->
       `;
       submissionBody.appendChild(row);
     });
     submissionTable.style.display = "block";
   }
-});
 
