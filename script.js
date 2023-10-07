@@ -171,54 +171,28 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-let lockDownloadButton = false; // A variable to keep track of whether to lock the "Download CSV" button
-
 function updateTable() {
   submissionBody.innerHTML = "";
-  lockDownloadButton = false; // Reset the lock flag at the beginning of each table update
-
   products.forEach((product, index) => {
     const row = document.createElement("tr");
-
+    
+    // Create individual cells
     Object.keys(product).forEach((key) => {
       const cell = document.createElement("td");
       cell.contentEditable = "true";
       cell.innerText = product[key] || "";
-
-      if (key === 'sku') { // Check if it's the SKU column
-        if (cell.innerText && cell.innerText.slice(-1) === '0') {
-          cell.style.backgroundColor = 'rgba(255, 0, 0, 0.3)'; // Soft red
-          lockDownloadButton = true;
-        }
-      }
-
+      
+      // Update 'products' array when the cell content changes
       cell.addEventListener("input", function() {
         products[index][key] = cell.innerText;
-
-        // Additional check for the SKU column
-        if (key === 'sku') {
-          if (cell.innerText && cell.innerText.slice(-1) === '0') {
-            cell.style.backgroundColor = 'rgba(255, 0, 0, 0.3)';
-            lockDownloadButton = true;
-          } else {
-            cell.style.backgroundColor = ''; // Reset background color
-          }
-        }
       });
 
       row.appendChild(cell);
     });
 
-    addDeleteButtonToRow(row, index);
+    addDeleteButtonToRow(row, index); 
     submissionBody.appendChild(row);
   });
-
-  const downloadButton = document.getElementById("downloadCSVButton"); // Assume the button has this ID
-  if (lockDownloadButton) {
-    downloadButton.disabled = true;
-  } else {
-    downloadButton.disabled = false;
-  }
 
   submissionTable.style.display = "block";
 }
