@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (product.price > 0 && product.size !== "premium") {
       return `SHELF-${vendor}-${skuNumberString}`;
     } else if (product.size === "premium") {
-      return `SHELF-demand-premium-${vendor}-${skuNumberString}`;
+      return `SHELF-premium-demand-${vendor}-${skuNumberString}`;
     } else {
       return `SHELF-demand-${vendor}-${skuNumberString}`;
     }
