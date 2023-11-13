@@ -17,15 +17,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const sizeInput = createInput("text", "size", "Size Variant");
     const priceInput = createInput("text", "price", "Price");
     const costInput = createInput("text", "cost", "Cost");
-    const gramsInput = createInput("text", "grams", "Grams");
+    const Input = createInput("text", "", "Barcode");
 
     sizeVariantsContainer.appendChild(sizeInput);
     sizeVariantsContainer.appendChild(priceInput);
     sizeVariantsContainer.appendChild(costInput);
-    sizeVariantsContainer.appendChild(gramsInput);
+    sizeVariantsContainer.appendChild(barcodeInput);
 
-    // Show the "Grams" input when adding size variants
-    gramsInput.style.display = "block";
+    // Show the "Barcode" input when adding size variants
+    barcodeInput.style.display = "block";
   });
 
   function addDeleteButtonToRow(row, index) {
@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
     updateTable();
   });
   
-  function generateSku(product) {
+  /*function generateSku(product) {
     const vendor = product.vendor.toUpperCase();
     let skuNumber;
     if (!skuCounter[vendor]) {
@@ -83,7 +83,39 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
       return `SHELF-demand-${vendor}-${skuNumberString}`;
     }
+  }*/
+  // Global SKU counter
+let globalSkuCounter = 0;
+let lastProductKey = '';
+
+function generateSKU(vendor, productType, price, size, color, fullSizePrices) {
+  const isFullSize = parseFloat(price) > 0 && size !== "Premium Sample" && size !== "Free Sample";
+  let skuPrefix = "SHELF";
+  let fullSizeRank = '';
+
+  if (isFullSize) {
+    // Determine the rank of the current full-size product based on its price
+    fullSizeRank = `F${fullSizePrices.indexOf(price) + 1}`;
+    skuPrefix += `-${fullSizeRank}`;
+  } else if (size === "Premium Sample") {
+    skuPrefix += "-premium-demand";
+  } else if (size === "Free Sample") {
+    skuPrefix += "-demand";
   }
+
+  // Unique key for each product variant
+  const productKey = `${vendor}-${productType}-${color}`;
+
+  // Increment global SKU counter for new product variant
+  if (productKey !== lastProductKey) {
+    globalSkuCounter++;
+    lastProductKey = productKey;
+  }
+
+  const skuNumber = globalSkuCounter.toString().padStart(6, '0');
+  return `${skuPrefix}-${vendor.replace(' ', '').toUpperCase()}-${skuNumber}`;
+}
+
   
   getElement("submitProduct").addEventListener("click", function () {
     const vendor = getElement("vendor").value;
@@ -93,7 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const sizeInputs = Array.from(document.getElementsByName("size"));
     const priceInputs = Array.from(document.getElementsByName("price"));
     const costInputs = Array.from(document.getElementsByName("cost"));
-    const gramsInputs = Array.from(document.getElementsByName("grams"));
+    const Inputs = Array.from(document.getElementsByName(""));
 
     // Generate rows for each variant combination
     for (let i = 0; i < (colorInputs.length || 1); i++) {
@@ -101,7 +133,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const size = sizeInputs[j].value || "N/A";
         const price = priceInputs[j].value || 0;
         const cost = costInputs[j].value || 0;
-        const grams = gramsInputs[j].value || "N/A";
+        const  = Inputs[j].value || "N/A";
 
         const productData = {
           vendor: vendor,
@@ -111,7 +143,7 @@ document.addEventListener("DOMContentLoaded", function () {
           size: size,
           price: price,
           cost: cost,
-          grams: grams,
+          : ,
         };
         
         products.push(productData);
@@ -165,8 +197,8 @@ document.addEventListener("DOMContentLoaded", function () {
     getElement("productType").value = "";
     colorVariantsContainer.innerHTML = "";
     sizeVariantsContainer.innerHTML = "";
-    const gramsInputs = Array.from(document.getElementsByName("grams"));
-    gramsInputs.forEach((input) => {
+    const Inputs = Array.from(document.getElementsByName(""));
+    Inputs.forEach((input) => {
       input.style.display = "none";
     });
   }
@@ -211,7 +243,7 @@ addBlankRowButton.addEventListener("click", function() {
     size: "",
     price: "",
     cost: "",
-    grams: "",
+    : "",
     sku: ""
   };
   
