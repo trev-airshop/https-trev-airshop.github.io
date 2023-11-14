@@ -44,46 +44,74 @@ document.addEventListener("DOMContentLoaded", function () {
     // This object will keep track of SKU numbers for each vendor.
   };
 
+  document.addEventListener("DOMContentLoaded", function () {
+  // ... [keep all existing code up to the 'generateSKUs' event listener]
+
+  // Updated 'generateSKUs' event listener
   getElement("generateSKUs").addEventListener("click", function () {
     // Reset the SKU counter
     skuCounter = {};
-  
-    // Iterate over each product in the products array
-    for (let i = 0; i < products.length; i++) {
-      // Generate SKU for the product
-      const sku = generateSku(products[i]);
-      // Add SKU to the product
-      products[i]["sku"] = sku;
-    }
-  
+
+    // Call the updated SKU generation function
+    updateSkus(products);
+
     // Update the table to show new SKUs
     updateTable();
   });
-  
-  function generateSku(product) {
-    const vendor = product.vendor.toUpperCase();
-    let skuNumber;
-    if (!skuCounter[vendor]) {
-      skuCounter[vendor] = 1;
-    }
-  
-    if (product.price > 0 && product.size !== "premium") {
-      skuNumber = skuCounter[vendor];
-      skuCounter[vendor]++;
+
+  // New SKU generation logic
+  function updateSkus(products) {
+    const skuCounter = {};
+    const fullSizeVariantCounter = {};
+
+    products.forEach(product => {
+      const vendor = product.vendor.toUpperCase();
+      const productName = product.productName;
+      const color = product.color || '';
+      const size = product.size;
+      const price = product.price;
+
+      const productKey = `${productName}-${color}`;
+      if (!skuCounter[productKey]) {
+        skuCounter[productKey] = 1;
+      }
+
+      // Check if the product is a full-size variant
+      if (price > 0 && size !== 'premium') {
+        fullSizeVariantCounter[productKey] = fullSizeVariantCounter[productKey] || [];
+        fullSizeVariantCounter[productKey].push(product);
+      }
+
+      product.sku = generateSku(vendor, skuCounter[productKey], size, price);
+    });
+
+    // Assign full-size variant identifiers
+    Object.keys(fullSizeVariantCounter).forEach(key => {
+      // Sort full-size variants by price in descending order
+      fullSizeVariantCounter[key].sort((a, b) => b.price - a.price);
+
+      fullSizeVariantCounter[key].forEach((product, index) => {
+        const variantIdentifier = fullSizeVariantCounter[key].length > 1 ? `F${index + 1}-` : '';
+        const vendor = product.vendor.toUpperCase();
+        const skuNumber = skuCounter[`${product.productName}-${product.color || ''}`];
+        product.sku = `SHELF-${variantIdentifier}${vendor}-${String(skuNumber).padStart(6, '0')}`;
+      });
+    });
+  }
+
+  function generateSku(vendor, skuNumber, size, price) {
+    if (size === 'premium') {
+      return `SHELF-premium-demand-${vendor}-${String(skuNumber).padStart(6, '0')}`;
+    } else if (price === 0) {
+      return `SHELF-demand-${vendor}-${String(skuNumber).padStart(6, '0')}`;
     } else {
-      skuNumber = skuCounter[vendor] - 1;
-    }
-  
-    const skuNumberString = String(skuNumber).padStart(6, "0");
-  
-    if (product.price > 0 && product.size !== "premium") {
-      return `SHELF-${vendor}-${skuNumberString}`;
-    } else if (product.size === "premium") {
-      return `SHELF-premium-demand-${vendor}-${skuNumberString}`;
-    } else {
-      return `SHELF-demand-${vendor}-${skuNumberString}`;
+      return `SHELF-${vendor}-${String(skuNumber).padStart(6, '0')}`;
     }
   }
+
+  // ... [keep all other existing code]
+});
+
   
   getElement("submitProduct").addEventListener("click", function () {
     const vendor = getElement("vendor").value;
