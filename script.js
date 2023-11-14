@@ -221,15 +221,45 @@ function updateTable() {
             });
     }
 
-    function convertDataToShopifyFormat(data, headers) {
-        // Convert data to Shopify format
-        // Placeholder implementation - adjust based on your data structure
-        return data.map(product => {
-            return headers.map(header => {
-                return product[header] || "";
-            }).join(",");
-        });
-    }
+    function convertDataToShopifyFormat(products, headers) {
+    let shopifyFormattedData = [];
+
+    products.forEach(product => {
+        const hasColorOptions = product.colors && product.colors.length > 0;
+
+        // If there are color options, map both color and size
+        if (hasColorOptions) {
+            product.colors.forEach(color => {
+                product.sizes.forEach(size => {
+                    let shopifyRow = createShopifyRow(product, headers, color, size, true);
+                    shopifyFormattedData.push(shopifyRow);
+                });
+            });
+        } else {
+            // If no color options, only map size
+            product.sizes.forEach(size => {
+                let shopifyRow = createShopifyRow(product, headers, null, size, false);
+                shopifyFormattedData.push(shopifyRow);
+            });
+        }
+    });
+
+    return shopifyFormattedData;
+}
+
+function createShopifyRow(product, headers, color, size, hasColor) {
+    return headers.map(header => {
+        switch (header) {
+            case "Option1 Name": return hasColor ? "Color" : "Size";
+            case "Option1 Value": return hasColor ? color : size;
+            case "Option2 Name": return hasColor ? "Size" : "";
+            case "Option2 Value": return hasColor ? size : "";
+            // Add mappings for other headers...
+            default: return ""; // Or some default value as per your data structure
+        }
+    }).join(",");
+}
+
 
     function triggerCSVDownload(csvData, filename) {
         const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
