@@ -208,7 +208,7 @@ function updateTable() {
     function downloadShopifyCSV(data) {
         // Fetch the Shopify CSV template and then process data
         // Assume 'shopifyTemplate.csv' is the path to your template
-        fetch('path/to/your/shopifyTemplate.csv')
+        fetch('https://raw.githubusercontent.com/trev-airshop/https-trev-airshop.github.io/main/shopProductTemplate.csv?token=GHSAT0AAAAAACKIJ7RD5TZNNNK6K4UKA372ZKS7AZA')
             .then(response => response.text())
             .then(template => {
                 const headers = template.split("\n")[0].split(",");
