@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
   
   function generateSku(product) {
-    const vendor = product.vendor.replace(/\s+/g,'').toUpperCase();
+    const vendor = product.vendor.replace(/[\s\uFEFF\xA0]+/g, '').toUpperCase();
     let skuNumber;
     if (!skuCounter[vendor]) {
       skuCounter[vendor] = 1;
@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
           productName: productName,
           productType: productType,
           color: colorInputs[i]?.value || "",
-          size: size + " mL",
+          size: size,
           price: price,
           cost: cost,
           barcode: barcode,
