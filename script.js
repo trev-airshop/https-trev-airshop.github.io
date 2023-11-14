@@ -59,58 +59,82 @@ document.addEventListener("DOMContentLoaded", function () {
     updateTable();
   });
 
-  // New SKU generation logic
-  function updateSkus(products) {
-    const skuCounter = {};
-    const fullSizeVariantCounter = {};
+// SKU Generation Logic
+function updateSkus(products) {
+  // Reset SKU counter for each vendor-product-color combination
+  let skuCounter = {};
+  let fullSizeVariantCounter = {};
 
-    products.forEach(product => {
-      const vendor = product.vendor.toUpperCase();
-      const productName = product.productName;
-      const color = product.color || '';
-      const size = product.size;
-      const price = product.price;
+  products.forEach(product => {
+    const vendor = product.vendor.toUpperCase();
+    const color = product.color || '';
+    const size = product.size;
+    const price = parseFloat(product.price);
+    const key = `${vendor}-${product.productName}-${color}`;
 
-      const productKey = `${productName}-${color}`;
-      if (!skuCounter[productKey]) {
-        skuCounter[productKey] = 1;
-      }
-
-      // Check if the product is a full-size variant
-      if (price > 0 && size !== 'premium') {
-        fullSizeVariantCounter[productKey] = fullSizeVariantCounter[productKey] || [];
-        fullSizeVariantCounter[productKey].push(product);
-      }
-
-      product.sku = generateSku(vendor, skuCounter[productKey], size, price);
-    });
-
-    // Assign full-size variant identifiers
-    Object.keys(fullSizeVariantCounter).forEach(key => {
-      // Sort full-size variants by price in descending order
-      fullSizeVariantCounter[key].sort((a, b) => b.price - a.price);
-
-      fullSizeVariantCounter[key].forEach((product, index) => {
-        const variantIdentifier = fullSizeVariantCounter[key].length > 1 ? `F${index + 1}-` : '';
-        const vendor = product.vendor.toUpperCase();
-        const skuNumber = skuCounter[`${product.productName}-${product.color || ''}`];
-        product.sku = `SHELF-${variantIdentifier}${vendor}-${String(skuNumber).padStart(6, '0')}`;
-      });
-    });
-  }
-
-  function generateSku(vendor, skuNumber, size, price) {
-    if (size === 'premium') {
-      return `SHELF-premium-demand-${vendor}-${String(skuNumber).padStart(6, '0')}`;
-    } else if (price === 0) {
-      return `SHELF-demand-${vendor}-${String(skuNumber).padStart(6, '0')}`;
-    } else {
-      return `SHELF-${vendor}-${String(skuNumber).padStart(6, '0')}`;
+    // Initialize SKU counter and full-size variant array if not present
+    if (!skuCounter[key]) {
+      skuCounter[key] = 1;
+      fullSizeVariantCounter[key] = [];
     }
-  }
 
-  // ... [keep all other existing code]
+    // If full-size, add to full-size variant array for later processing
+    if (price > 0 && size !== 'premium') {
+      fullSizeVariantCounter[key].push(product);
+    }
+  });
+
+  // Process full-size variants for each vendor-product-color combination
+  Object.keys(fullSizeVariantCounter).forEach(key => {
+    const fullSizeVariants = fullSizeVariantCounter[key];
+    if (fullSizeVariants.length <= 1) return; // Skip if only one full-size variant
+
+    // Sort full-size variants by price in descending order
+    fullSizeVariants.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+
+    // Assign F1, F2, etc. to full-size variants
+    fullSizeVariants.forEach((product, index) => {
+      const skuNumber = skuCounter[key];
+      product.sku = `SHELF-F${index + 1}-${key}-${String(skuNumber).padStart(6, '0')}`;
+    });
+
+    // Increment SKU counter for this combination
+    skuCounter[key]++;
+  });
+
+  // Generate SKUs for non-full-size and single full-size variants
+  products.forEach(product => {
+    const vendor = product.vendor.toUpperCase();
+    const color = product.color || '';
+    const size = product.size;
+    const price = parseFloat(product.price);
+    const key = `${vendor}-${product.productName}-${color}`;
+
+    if (price > 0 && size !== 'premium' && fullSizeVariantCounter[key].length <= 1) {
+      // Single full-size variant
+      const skuNumber = skuCounter[key];
+      product.sku = `SHELF-${key}-${String(skuNumber).padStart(6, '0')}`;
+    } else if (size === 'premium' || price === 0) {
+      // Premium or zero-price variants
+      const suffix = size === 'premium' ? 'premium-demand' : 'demand';
+      const skuNumber = skuCounter[key];
+      product.sku = `SHELF-${suffix}-${key}-${String(skuNumber).padStart(6, '0')}`;
+    }
+  });
+}
+
+// Replace your existing 'generateSKUs' event listener with this
+getElement("generateSKUs").addEventListener("click", function () {
+  // Reset the SKU counter
+  skuCounter = {};
+
+  // Call the updated SKU generation function
+  updateSkus(products);
+
+  // Update the table to show new SKUs
+  updateTable();
 });
+
 
   
   getElement("submitProduct").addEventListener("click", function () {
