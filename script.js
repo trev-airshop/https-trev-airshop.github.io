@@ -84,37 +84,32 @@ document.addEventListener("DOMContentLoaded", function () {
       return `SHELF-demand-${vendor}-${skuNumberString}`;
     }
   }*/
-  // Global SKU counter
-let globalSkuCounter = 0;
-let lastProductKey = '';
+function generateSku(product, priceOrder) {
+    const vendor = product.vendor.toUpperCase().replace(/\s/g, '');
+    let skuNumber;
+    
+    if (!skuCounter[vendor]) {
+        skuCounter[vendor] = 1;
+    }
+    skuNumber = skuCounter[vendor];
 
-function generateSKU(vendor, productType, price, size, color, fullSizePrices) {
-  const isFullSize = parseFloat(price) > 0 && size !== "Premium Sample" && size !== "Free Sample";
-  let skuPrefix = "SHELF";
-  let fullSizeRank = '';
+    // This part will handle the size variants
+    let sizeVariant = '';
+    if (product.size !== 'premium') {
+        sizeVariant = `F${priceOrder}`;
+    }
 
-  if (isFullSize) {
-    // Determine the rank of the current full-size product based on its price
-    fullSizeRank = `F${fullSizePrices.indexOf(price) + 1}`;
-    skuPrefix += `-${fullSizeRank}`;
-  } else if (size === "Premium Sample") {
-    skuPrefix += "-premium-demand";
-  } else if (size === "Free Sample") {
-    skuPrefix += "-demand";
-  }
+    const skuNumberString = String(skuNumber).padStart(6, "0");
 
-  // Unique key for each product variant
-  const productKey = `${vendor}-${productType}-${color}`;
-
-  // Increment global SKU counter for new product variant
-  if (productKey !== lastProductKey) {
-    globalSkuCounter++;
-    lastProductKey = productKey;
-  }
-
-  const skuNumber = globalSkuCounter.toString().padStart(6, '0');
-  return `${skuPrefix}-${vendor.replace(' ', '').toUpperCase()}-${skuNumber}`;
+    if (product.price > 0 && product.size !== 'premium') {
+        return `SHELF-${sizeVariant}-${vendor}-${skuNumberString}`;
+    } else if (product.size === 'premium') {
+        return `SHELF-premium-demand-${vendor}-${skuNumberString}`;
+    } else {
+        return `SHELF-demand-${vendor}-${skuNumberString}`;
+    }
 }
+
 
   
   getElement("submitProduct").addEventListener("click", function () {
