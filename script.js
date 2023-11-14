@@ -1,5 +1,33 @@
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('https://raw.githubusercontent.com/trev-airshop/https-trev-airshop.github.io/main/merchtypes.csv?token=GHSAT0AAAAAACKIJ7RDEBLS27GOUU4PAVJMZKS4CXQ')
+        .then(response => response.text())
+        .then(data => {
+            populateSelectBox(parseCSV(data));
+        });
+});
 
+function parseCSV(csvData) {
+    var lines = csvData.split("\n");
+    var result = [];
+    lines.forEach(function(line) {
+        result.push(line.trim());
+    });
+    return result;
+}
 
+function populateSelectBox(productTypes) {
+    var selectBox = document.getElementById('productType');
+    productTypes.forEach(function(type) {
+        if (type) {
+            var option = document.createElement('option');
+            option.value = type;
+            option.text = type;
+            selectBox.appendChild(option);
+        }
+    });
+}
+
+//original below
 
 document.addEventListener("DOMContentLoaded", function () {
   const getElement = (id) => document.getElementById(id);
