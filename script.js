@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
   
   function generateSku(product) {
-    const vendor = product.vendor.replace(/\s+g,'')toUpperCase();
+    const vendor = product.vendor.replace(/\s+g,'').toUpperCase();
     let skuNumber;
     if (!skuCounter[vendor]) {
       skuCounter[vendor] = 1;
