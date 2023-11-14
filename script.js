@@ -198,6 +198,52 @@ function updateTable() {
   submissionTable.style.display = "block";
 }
 
+    // Add event listener for the new Shopify CSV download button
+    const downloadShopifyCSVButton = getElement("downloadShopifyCSV");
+    downloadShopifyCSVButton.addEventListener("click", function() {
+        downloadShopifyCSV(products);
+    });
+
+    // Function to download Shopify-formatted CSV
+    function downloadShopifyCSV(data) {
+        // Fetch the Shopify CSV template and then process data
+        // Assume 'shopifyTemplate.csv' is the path to your template
+        fetch('path/to/your/shopifyTemplate.csv')
+            .then(response => response.text())
+            .then(template => {
+                const headers = template.split("\n")[0].split(",");
+                const shopifyFormattedData = convertDataToShopifyFormat(data, headers);
+                const shopifyCsv = [headers.join(","), ...shopifyFormattedData].join("\n");
+                triggerCSVDownload(shopifyCsv, "shopify_products.csv");
+            })
+            .catch(error => {
+                console.error("Error fetching Shopify template:", error);
+            });
+    }
+
+    function convertDataToShopifyFormat(data, headers) {
+        // Convert data to Shopify format
+        // Placeholder implementation - adjust based on your data structure
+        return data.map(product => {
+            return headers.map(header => {
+                return product[header] || "";
+            }).join(",");
+        });
+    }
+
+    function triggerCSVDownload(csvData, filename) {
+        const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
+        const link = document.createElement("a");
+        if (link.download !== undefined) {
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", filename);
+            link.style.visibility = "hidden";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    }
 
 // Add "Add Blank Row" button
 const addBlankRowButton = document.getElementById("addBlankRowButton");
