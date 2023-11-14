@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
           productName: productName,
           productType: productType,
           color: colorInputs[i]?.value || "",
-          size: size,
+          size: size + " mL",
           price: price,
           cost: cost,
           barcode: barcode,
