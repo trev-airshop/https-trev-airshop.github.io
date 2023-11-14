@@ -24,40 +24,7 @@
         </select>
       </div>
       <!-- js to fetch and populate the select -->
-      <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            fetch('https://raw.githubusercontent.com/trev-airshop/https-trev-airshop.github.io/main/merchtypes.csv?token=GHSAT0AAAAAACKIJ7RDEBLS27GOUU4PAVJMZKS4CXQ')
-                .then(response => response.text())
-                .then(data => {
-                    populateSelectBox(parseCSV(data));
-                });
-        });
-
-        function parseCSV(csvData) {
-            var lines = csvData.split("\n");
-            var result = [];
-            lines.forEach(function(line) {
-                var columns = line.split(","); // Splitting each line into columns
-                var firstColumn = columns[0].trim(); // Selecting the first column
-                if (firstColumn) {
-                  result.push(firstColumn); // Adding the first column value to the result
-                }
-              });
-              return result;
-        }
-
-        function populateSelectBox(productTypes) {
-            var selectBox = document.getElementById('productType');
-            productTypes.forEach(function(type) {
-                if (type) {
-                    var option = document.createElement('option');
-                    option.value = type;
-                    option.text = type;
-                    selectBox.appendChild(option);
-                }
-            });
-        }
-    </script>
+    <script> src="merchTypeParse.js"</script>
 
       <div>
         <label for="colorVariants">Color Variants:</label>
