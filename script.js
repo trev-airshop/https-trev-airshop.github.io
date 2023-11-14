@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const sizeInput = createInput("text", "size", "Size Variant");
     const priceInput = createInput("text", "price", "Price");
     const costInput = createInput("text", "cost", "Cost");
-    const Input = createInput("text", "", "Barcode");
+    const barcodeInput = createInput("text", "", "Barcode");
 
     sizeVariantsContainer.appendChild(sizeInput);
     sizeVariantsContainer.appendChild(priceInput);
@@ -120,24 +120,25 @@ document.addEventListener("DOMContentLoaded", function () {
     const sizeInputs = Array.from(document.getElementsByName("size"));
     const priceInputs = Array.from(document.getElementsByName("price"));
     const costInputs = Array.from(document.getElementsByName("cost"));
-    const Inputs = Array.from(document.getElementsByName(""));
+    const barcodeInputs = Array.from(document.getElementsByName("barcode"));
 
     // Generate rows for each variant combination
     for (let i = 0; i < (colorInputs.length || 1); i++) {
       for (let j = 0; j < sizeInputs.length; j++) {
-        const size = sizeInputs[j].value || "N/A";
+        const size = sizeInputs[j].value || "";
         const price = priceInputs[j].value || 0;
         const cost = costInputs[j].value || 0;
-        const  = Inputs[j].value || "N/A";
+        const barcode = barcodeInputs[j].value || "";
 
         const productData = {
           vendor: vendor,
           productName: productName,
           productType: productType,
-          color: colorInputs[i]?.value || "N/A",
+          color: colorInputs[i]?.value || "",
           size: size,
           price: price,
           cost: cost,
+          barcode: barcode
           : ,
         };
         
@@ -187,7 +188,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Function to reset the form
   function resetForm() {
-    getElement("vendor").value = "";
+    // getElement("vendor").value = "";
     getElement("product").value = "";
     getElement("productType").value = "";
     colorVariantsContainer.innerHTML = "";
@@ -238,7 +239,7 @@ addBlankRowButton.addEventListener("click", function() {
     size: "",
     price: "",
     cost: "",
-    : "",
+    barcode: "",
     sku: ""
   };
   
