@@ -138,8 +138,7 @@ document.addEventListener("DOMContentLoaded", function () {
           size: size,
           price: price,
           cost: cost,
-          barcode: barcode
-          : ,
+          barcode: barcode,
         };
         
         products.push(productData);
