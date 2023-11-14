@@ -225,20 +225,20 @@ function updateTable() {
     let shopifyFormattedData = [];
 
     products.forEach(product => {
-        const hasColorOptions = product.colors && product.colors.length > 0;
+        const hasColors = product.colors && product.colors.length > 0;
 
-        // If there are color options, map both color and size
-        if (hasColorOptions) {
+        if (hasColors) {
+            // If product has color variants
             product.colors.forEach(color => {
                 product.sizes.forEach(size => {
-                    let shopifyRow = createShopifyRow(product, headers, color, size, true);
+                    let shopifyRow = mapProductToShopifyRow(product, color, size, true, headers);
                     shopifyFormattedData.push(shopifyRow);
                 });
             });
         } else {
-            // If no color options, only map size
+            // If product doesn't have color variants
             product.sizes.forEach(size => {
-                let shopifyRow = createShopifyRow(product, headers, null, size, false);
+                let shopifyRow = mapProductToShopifyRow(product, null, size, false, headers);
                 shopifyFormattedData.push(shopifyRow);
             });
         }
@@ -247,18 +247,19 @@ function updateTable() {
     return shopifyFormattedData;
 }
 
-function createShopifyRow(product, headers, color, size, hasColor) {
+function mapProductToShopifyRow(product, color, size, hasColor, headers) {
     return headers.map(header => {
         switch (header) {
             case "Option1 Name": return hasColor ? "Color" : "Size";
             case "Option1 Value": return hasColor ? color : size;
             case "Option2 Name": return hasColor ? "Size" : "";
             case "Option2 Value": return hasColor ? size : "";
-            // Add mappings for other headers...
+            // Map other headers here...
             default: return ""; // Or some default value as per your data structure
         }
     }).join(",");
 }
+
 
 
     function triggerCSVDownload(csvData, filename) {
