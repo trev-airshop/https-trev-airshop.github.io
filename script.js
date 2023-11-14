@@ -49,14 +49,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Updated 'generateSKUs' event listener
   getElement("generateSKUs").addEventListener("click", function () {
+    console.log("Button clicked. Starting SKU generation.");
+
     // Reset the SKU counter
     skuCounter = {};
 
+    console.log("Products before SKU generation:", JSON.stringify(products));
     // Call the updated SKU generation function
     updateSkus(products);
+    console.log("Products after SKU generation:", JSON.stringify(products));
 
     // Update the table to show new SKUs
     updateTable();
+    console.log("Table update function called.");
   });
 
 // SKU Generation Logic
