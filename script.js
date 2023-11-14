@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
     updateTable();
   });
   
-  /*function generateSku(product) {
+  function generateSku(product) {
     const vendor = product.vendor.toUpperCase();
     let skuNumber;
     if (!skuCounter[vendor]) {
@@ -83,8 +83,8 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
       return `SHELF-demand-${vendor}-${skuNumberString}`;
     }
-  }*/
-function generateSku(product, priceOrder) {
+  }
+/*function generateSku(product, priceOrder) {
     const vendor = product.vendor.toUpperCase().replace(/\s/g, '');
     let skuNumber;
     
@@ -108,7 +108,7 @@ function generateSku(product, priceOrder) {
     } else {
         return `SHELF-demand-${vendor}-${skuNumberString}`;
     }
-}
+}*/
 
 
   
