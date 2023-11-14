@@ -17,10 +17,9 @@ function parseCSV(csvData) {
         if (columns.length > 1) {
             result.push({
                 firstColumn: columns[0],
-                // Add other columns as needed
                 secondColumn: columns[1],
                 thirdColumn: columns[2],
-                // ...
+                fourthColumn: columns[3],
             });
         }
     });
