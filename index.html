@@ -37,9 +37,13 @@
             var lines = csvData.split("\n");
             var result = [];
             lines.forEach(function(line) {
-                result.push(line.trim());
-            });
-            return result;
+                var columns = line.split(","); // Splitting each line into columns
+                var firstColumn = columns[0].trim(); // Selecting the first column
+                if (firstColumn) {
+                  result.push(firstColumn); // Adding the first column value to the result
+                }
+              });
+              return result;
         }
 
         function populateSelectBox(productTypes) {
