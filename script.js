@@ -84,37 +84,11 @@ document.addEventListener("DOMContentLoaded", function () {
       return `SHELF-demand-${vendor}-${skuNumberString}`;
     }
   }
-/*function generateSku(product, priceOrder) {
-    const vendor = product.vendor.toUpperCase().replace(/\s/g, '');
-    let skuNumber;
-    
-    if (!skuCounter[vendor]) {
-        skuCounter[vendor] = 1;
-    }
-    skuNumber = skuCounter[vendor];
-
-    // This part will handle the size variants
-    let sizeVariant = '';
-    if (product.size !== 'premium') {
-        sizeVariant = `F${priceOrder}`;
-    }
-
-    const skuNumberString = String(skuNumber).padStart(6, "0");
-
-    if (product.price > 0 && product.size !== 'premium') {
-        return `SHELF-${sizeVariant}-${vendor}-${skuNumberString}`;
-    } else if (product.size === 'premium') {
-        return `SHELF-premium-demand-${vendor}-${skuNumberString}`;
-    } else {
-        return `SHELF-demand-${vendor}-${skuNumberString}`;
-    }
-}*/
-
-
   
   getElement("submitProduct").addEventListener("click", function () {
     const vendor = getElement("vendor").value;
-    const productName = getElement("product").value;
+    const product = getElement("product").value;
+    const productName = vendor + " " + product;
     const productType = getElement("productType").value; 
     const colorInputs = Array.from(document.getElementsByName("color"));
     const sizeInputs = Array.from(document.getElementsByName("size"));
