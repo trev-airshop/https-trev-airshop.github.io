@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const sizeInput = createInput("text", "size", "Size Variant");
     const priceInput = createInput("text", "price", "Price");
     const costInput = createInput("text", "cost", "Cost");
-    const barcodeInput = createInput("text", "", "Barcode");
+    const barcodeInput = createInput("text", "barcode", "Barcode");
 
     sizeVariantsContainer.appendChild(sizeInput);
     sizeVariantsContainer.appendChild(priceInput);
