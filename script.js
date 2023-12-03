@@ -97,7 +97,9 @@ function generateSku(product, products) {
 
     if (ranking && numberOfFullSizeVariants > 1) { // Add F snippet if more than one full-size variant
       fSnippet = `F${ranking}-`;
-  
+    }
+  }
+
   const skuNumberString = String(skuNumber).padStart(6, "0");
 
   if (product.size === "premium") {
