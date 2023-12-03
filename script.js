@@ -92,10 +92,11 @@ function generateSku(product, products) {
     const productKey = `${product.productName}-${product.size}-${product.price}`;
     const ranking = fullSizeRankings[productName][color][productKey];
 
-    if (ranking && ranking > 1) { // Add F snippet only if more than one full-size variant
+    // Determine the number of full-size variants for this product and color
+    const numberOfFullSizeVariants = Object.keys(fullSizeRankings[productName][color]).length;
+
+    if (ranking && numberOfFullSizeVariants > 1) { // Add F snippet if more than one full-size variant
       fSnippet = `F${ranking}-`;
-    } // No else clause, fSnippet remains an empty string if only one variant
-  }
   
   const skuNumberString = String(skuNumber).padStart(6, "0");
 
