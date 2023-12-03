@@ -40,9 +40,23 @@ document.addEventListener("DOMContentLoaded", function () {
   row.appendChild(deleteButton);
 }
 
-let skuCounter = {};
-let fullSizeRankings = {};
+getElement("generateSKUs").addEventListener("click", function () {
+  // Reset the SKU counter
+  skuCounter = {};
+  fullSizeRankings = {}; // Also reset the full size rankings
 
+  // Iterate over each product in the products array
+  for (let i = 0; i < products.length; i++) {
+    // Generate SKU for the product, passing the entire products array
+    const sku = generateSku(products[i], products);
+    // Add SKU to the product
+    products[i]["sku"] = sku;
+  }
+
+  // Update the table to show new SKUs
+  updateTable();
+});
+  
 function generateSku(product, products) {
   const vendor = product.vendor.replace(/[\s\uFEFF\xA0]+/g, '').toUpperCase();
   const color = product.color;
@@ -109,8 +123,7 @@ function getFullSizeRankings(products, vendor, color) {
 
   return rankings;
 }
-
-  
+ 
   getElement("submitProduct").addEventListener("click", function () {
     const vendor = getElement("vendor").value;
     const product = getElement("product").value;
