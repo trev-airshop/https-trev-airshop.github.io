@@ -81,6 +81,9 @@ function generateSku(product, products) {
 
   let skuNumber = skuCounter[vendor][productName][color];
 
+  // Log current product details for debugging
+  console.log('Current product:', product);
+
   let fSnippet = '';
 
   // Initialize fullSizeRankings for the product if it's not present
@@ -95,9 +98,13 @@ function generateSku(product, products) {
 
   if (isFullSize) {
     const productKey = `${product.productName}-${product.size}-${product.price}`;
+    // Log the productKey and rankings for debugging
+    console.log('Product key:', productKey);
+    console.log('Rankings:', fullSizeRankings[productName][color]);
+    
     const ranking = fullSizeRankings[productName][color][productKey];
-
     const numberOfFullSizeVariants = Object.keys(fullSizeRankings[productName][color]).length;
+    
     if (ranking && numberOfFullSizeVariants > 1) {
       fSnippet = `F${ranking}-`;
     }
