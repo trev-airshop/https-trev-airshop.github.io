@@ -59,7 +59,7 @@ getElement("generateSKUs").addEventListener("click", function () {
 });
 
 function generateSku(product, products) {
-  const vendor = product.vendor;
+  const vendor = product.vendor.replace(/[\s\uFEFF\xA0]+/g, '').toUpperCase();
   const productName = product.productName;
   const color = product.color;
   const isFullSize = product.size !== "premium" && product.price > 0;
