@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
   row.appendChild(deleteButton);
 }
 
-  let skuCounter = {};
+let skuCounter = {};
 let fullSizeRankings = {};
 
 function generateSku(product, products) {
