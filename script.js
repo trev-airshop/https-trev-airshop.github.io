@@ -66,15 +66,25 @@ function generateSku(product, products) {
 
   // Initialize vendor in skuCounter if not present
   if (!skuCounter[vendor]) {
-    skuCounter[vendor] = 1; // Start with 1 for each new vendor
+    skuCounter[vendor] = {};
   }
 
-  let skuNumber = skuCounter[vendor];
+  // Initialize product name in skuCounter for the vendor if not present
+  if (!skuCounter[vendor][productName]) {
+    skuCounter[vendor][productName] = {};
+  }
+
+  // Initialize color in skuCounter and assign/increment SKU number for new color variant
+  if (!skuCounter[vendor][productName][color]) {
+    skuCounter[vendor][productName][color] = Object.keys(skuCounter[vendor][productName]).length + 1;
+  }
+
+  let skuNumber = skuCounter[vendor][productName][color];
 
   let fSnippet = '';
 
+  // Generate ranking for full-size products and add F snippet
   if (isFullSize) {
-    // Ensure fullSizeRankings is properly initialized
     if (!fullSizeRankings[productName]) {
       fullSizeRankings[productName] = {};
     }
@@ -82,17 +92,14 @@ function generateSku(product, products) {
       fullSizeRankings[productName][color] = getFullSizeRankings(products, productName, color);
     }
 
-    const productKey = `${product.productName}-${product.size}-${product.price}`;
+    const productKey = `${productName}-${product.size}-${product.price}`;
     const ranking = fullSizeRankings[productName][color][productKey];
-
     const numberOfFullSizeVariants = Object.keys(fullSizeRankings[productName][color]).length;
+
     if (ranking && numberOfFullSizeVariants > 1) {
       fSnippet = `F${ranking}-`;
     }
   }
-
-  // Increment skuCounter for the vendor
-  skuCounter[vendor]++;
 
   const skuNumberString = String(skuNumber).padStart(6, "0");
 
