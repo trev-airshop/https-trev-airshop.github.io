@@ -106,18 +106,23 @@ function generateSku(product, products) {
 }
 
 function getFullSizeRankings(products, productName, color) {
-  // Filter products by product name and color, considering only full-size variants
+  // Filter products to get only full-size variants of the specified product and color
   const fullSizeProducts = products.filter(p => 
     p.productName === productName &&
     p.color === color && 
     p.size !== "premium" && p.size !== "Free Sample" &&
     p.price > 0
-  ).sort((a, b) => b.price - a.price);
+  );
 
-  // Assign rankings based on price
+  // Sort these products by price in descending order
+  fullSizeProducts.sort((a, b) => b.price - a.price);
+
+  // Assign rankings based on sorted order
   const rankings = {};
   fullSizeProducts.forEach((product, index) => {
-    rankings[product.productName] = index + 1;
+    // Create a unique key for each product variant if needed
+    const productKey = `${product.productName}-${product.size}-${product.price}`;
+    rankings[productKey] = index + 1;
   });
 
   return rankings;
