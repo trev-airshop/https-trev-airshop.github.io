@@ -98,11 +98,11 @@ function generateSku(product, products) {
   const skuNumberString = String(skuNumber).padStart(6, "0");
 
   if (product.size === "premium") {
-    return `SHELF-premium-demand-${productName}-${skuNumberString}`;
+    return `SHELF-premium-demand-${vendor}-${skuNumberString}`;
   } else if (product.price === 0 && product.size === "Free Sample") {
-    return `SHELF-demand-${productName}-${skuNumberString}`;
+    return `SHELF-demand-${vendor}-${skuNumberString}`;
   } else {
-    return `SHELF-${fSnippet}${productName}-${skuNumberString}`;
+    return `SHELF-${fSnippet}${vendor}-${skuNumberString}`;
   }
 }
 
