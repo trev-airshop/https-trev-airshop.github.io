@@ -40,50 +40,76 @@ document.addEventListener("DOMContentLoaded", function () {
   row.appendChild(deleteButton);
 }
 
-  let skuCounter = {
-    // This object will keep track of SKU numbers for each vendor.
-  };
+  let skuCounter = {};
+let fullSizeRankings = {};
 
-  getElement("generateSKUs").addEventListener("click", function () {
-    // Reset the SKU counter
-    skuCounter = {};
-  
-    // Iterate over each product in the products array
-    for (let i = 0; i < products.length; i++) {
-      // Generate SKU for the product
-      const sku = generateSku(products[i]);
-      // Add SKU to the product
-      products[i]["sku"] = sku;
-    }
-  
-    // Update the table to show new SKUs
-    updateTable();
-  });
-  
-  function generateSku(product) {
-    const vendor = product.vendor.replace(/[\s\uFEFF\xA0]+/g, '').toUpperCase();
-    let skuNumber;
-    if (!skuCounter[vendor]) {
-      skuCounter[vendor] = 1;
-    }
-  
-    if (product.price > 0 && product.size !== "premium") {
-      skuNumber = skuCounter[vendor];
-      skuCounter[vendor]++;
-    } else {
-      skuNumber = skuCounter[vendor] - 1;
-    }
-  
-    const skuNumberString = String(skuNumber).padStart(6, "0");
-  
-    if (product.price > 0 && product.size !== "premium") {
-      return `SHELF-${vendor}-${skuNumberString}`;
-    } else if (product.size === "premium") {
-      return `SHELF-premium-demand-${vendor}-${skuNumberString}`;
-    } else {
-      return `SHELF-demand-${vendor}-${skuNumberString}`;
+function generateSku(product, products) {
+  const vendor = product.vendor.replace(/[\s\uFEFF\xA0]+/g, '').toUpperCase();
+  const color = product.color;
+  const isFullSize = product.size !== "premium" && product.price > 0;
+
+  // Initialize vendor in skuCounter if not present
+  if (!skuCounter[vendor]) {
+    skuCounter[vendor] = 1;
+  }
+
+  // Initialize color in fullSizeRankings for the vendor if not present
+  if (!fullSizeRankings[vendor]) {
+    fullSizeRankings[vendor] = {};
+  }
+
+  // Generate ranking for full-size products
+  if (isFullSize && !fullSizeRankings[vendor][color]) {
+    fullSizeRankings[vendor][color] = getFullSizeRankings(products, vendor, color);
+  }
+
+  let skuNumber = skuCounter[vendor];
+  let fSnippet = '';
+
+  // Add F snippet for full-size products
+  if (isFullSize) {
+    const ranking = fullSizeRankings[vendor][color][product.productName];
+    if (ranking > 1) { // Add F snippet only if more than one full-size variant
+      fSnippet = `F${ranking}-`;
     }
   }
+
+  const skuNumberString = String(skuNumber).padStart(6, "0");
+
+  // Increment skuCounter only for new products or color variants
+  if (product.size === 'premium' || product.price === 0) {
+    skuNumber--;
+  } else {
+    skuCounter[vendor]++;
+  }
+
+  if (product.size === "premium") {
+    return `SHELF-premium-demand-${vendor}-${skuNumberString}`;
+  } else if (product.price === 0) {
+    return `SHELF-demand-${vendor}-${skuNumberString}`;
+  } else {
+    return `SHELF-${fSnippet}${vendor}-${skuNumberString}`;
+  }
+}
+
+function getFullSizeRankings(products, vendor, color) {
+  // Filter products by vendor and color, and sort by price descending
+  const fullSizeProducts = products.filter(p => 
+    p.vendor.replace(/[\s\uFEFF\xA0]+/g, '').toUpperCase() === vendor &&
+    p.color === color && 
+    p.size !== "premium" && 
+    p.price > 0
+  ).sort((a, b) => b.price - a.price);
+
+  // Assign rankings based on price
+  const rankings = {};
+  fullSizeProducts.forEach((product, index) => {
+    rankings[product.productName] = index + 1;
+  });
+
+  return rankings;
+}
+
   
   getElement("submitProduct").addEventListener("click", function () {
     const vendor = getElement("vendor").value;
