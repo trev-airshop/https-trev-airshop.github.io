@@ -98,7 +98,7 @@ function generateSku(product, products) {
 
   if (product.size === "premium") {
     return `SHELF-premium-demand-${productName}-${skuNumberString}`;
-  } else if (product.price === 0) {
+  } else if (product.price === 0 && product.size === "Free Sample") {
     return `SHELF-demand-${productName}-${skuNumberString}`;
   } else {
     return `SHELF-${fSnippet}${productName}-${skuNumberString}`;
@@ -106,11 +106,11 @@ function generateSku(product, products) {
 }
 
 function getFullSizeRankings(products, productName, color) {
-  // Filter products by product name and color, and sort by price descending
+  // Filter products by product name and color, considering only full-size variants
   const fullSizeProducts = products.filter(p => 
     p.productName === productName &&
     p.color === color && 
-    p.size !== "premium" && 
+    p.size !== "premium" && p.size !== "Free Sample" &&
     p.price > 0
   ).sort((a, b) => b.price - a.price);
 
@@ -122,6 +122,7 @@ function getFullSizeRankings(products, productName, color) {
 
   return rankings;
 }
+
 
  
   getElement("submitProduct").addEventListener("click", function () {
