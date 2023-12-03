@@ -88,12 +88,15 @@ function generateSku(product, products) {
     if (!fullSizeRankings[productName][color]) {
       fullSizeRankings[productName][color] = getFullSizeRankings(products, productName, color);
     }
-    const ranking = fullSizeRankings[productName][color][product.productName];
-    if (ranking > 1) { // Add F snippet only if more than one full-size variant
-      fSnippet = `F${ranking}-`;
-    }
-  }
+    // Create a unique key for the product variant
+    const productKey = `${product.productName}-${product.size}-${product.price}`;
+    const ranking = fullSizeRankings[productName][color][productKey];
 
+    if (ranking && ranking > 1) { // Add F snippet only if more than one full-size variant
+      fSnippet = `F${ranking}-`;
+    } // No else clause, fSnippet remains an empty string if only one variant
+  }
+  
   const skuNumberString = String(skuNumber).padStart(6, "0");
 
   if (product.size === "premium") {
