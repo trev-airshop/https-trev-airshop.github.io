@@ -64,13 +64,22 @@ function generateSku(product, products) {
   const color = product.color;
   const isFullSize = product.size !== "premium" && product.price > 0;
 
-  // Initialize vendor in skuCounter if not present
+   // Initialize vendor in skuCounter if not present
   if (!skuCounter[vendor]) {
-    skuCounter[vendor] = 1; // Start with 1 for each new vendor
+    skuCounter[vendor] = {};
   }
 
-  // Use a global counter for each vendor, not resetting for each product
-  let skuNumber = skuCounter[vendor];
+  // Initialize product name in skuCounter for the vendor if not present
+  if (!skuCounter[vendor][productName]) {
+    skuCounter[vendor][productName] = {};
+  }
+
+  // Increment SKU number only for new color variants within the product
+  if (skuCounter[vendor][productName][color] === undefined) {
+    skuCounter[vendor][productName][color] = Object.keys(skuCounter[vendor][productName]).length + 1;
+  }
+
+  let skuNumber = skuCounter[vendor][productName][color];
 
   let fSnippet = '';
 
@@ -99,7 +108,7 @@ function generateSku(product, products) {
 
   if (product.size === "premium") {
     return `SHELF-premium-demand-${vendor}-${skuNumberString}`;
-  } else if (product.price === 0 && product.size === "Free Sample") {
+  } else if (product.size === "Free Sample") {
     return `SHELF-demand-${vendor}-${skuNumberString}`;
   } else {
     return `SHELF-${fSnippet}${vendor}-${skuNumberString}`;
