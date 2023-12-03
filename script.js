@@ -41,9 +41,10 @@ document.addEventListener("DOMContentLoaded", function () {
 }
 
 getElement("generateSKUs").addEventListener("click", function () {
-  // Reset the SKU counter
+  // Reset the SKU counter and related objects
   skuCounter = {};
-  fullSizeRankings = {}; // Also reset the full size rankings
+  fullSizeRankings = {}; 
+  productColorSkuNumber = {}; // Also reset the product color SKU number
 
   // Iterate over each product in the products array
   for (let i = 0; i < products.length; i++) {
@@ -56,33 +57,38 @@ getElement("generateSKUs").addEventListener("click", function () {
   // Update the table to show new SKUs
   updateTable();
 });
-  
+
 function generateSku(product, products) {
-  const vendor = product.vendor.replace(/[\s\uFEFF\xA0]+/g, '').toUpperCase();
+  const productName = product.productName;
   const color = product.color;
   const isFullSize = product.size !== "premium" && product.price > 0;
 
-  // Initialize vendor in skuCounter if not present
-  if (!skuCounter[vendor]) {
-    skuCounter[vendor] = 1;
+  // Initialize product name in skuCounter if not present
+  if (!skuCounter[productName]) {
+    skuCounter[productName] = 1;
   }
 
-  // Initialize color in fullSizeRankings for the vendor if not present
-  if (!fullSizeRankings[vendor]) {
-    fullSizeRankings[vendor] = {};
+  // Initialize color in fullSizeRankings and productColorSkuNumber for the product if not present
+  if (!fullSizeRankings[productName]) {
+    fullSizeRankings[productName] = {};
+    productColorSkuNumber[productName] = {};
   }
 
-  // Generate ranking for full-size products
-  if (isFullSize && !fullSizeRankings[vendor][color]) {
-    fullSizeRankings[vendor][color] = getFullSizeRankings(products, vendor, color);
+  // Assign or retrieve SKU number for the color of the product
+  if (!productColorSkuNumber[productName][color]) {
+    productColorSkuNumber[productName][color] = skuCounter[productName];
+    skuCounter[productName]++; // Increment for a new color variant of the product
   }
 
-  let skuNumber = skuCounter[vendor];
+  let skuNumber = productColorSkuNumber[productName][color];
   let fSnippet = '';
 
-  // Add F snippet for full-size products
+  // Generate ranking for full-size products and add F snippet
   if (isFullSize) {
-    const ranking = fullSizeRankings[vendor][color][product.productName];
+    if (!fullSizeRankings[productName][color]) {
+      fullSizeRankings[productName][color] = getFullSizeRankings(products, productName, color);
+    }
+    const ranking = fullSizeRankings[productName][color][product.productName];
     if (ranking > 1) { // Add F snippet only if more than one full-size variant
       fSnippet = `F${ranking}-`;
     }
@@ -90,26 +96,19 @@ function generateSku(product, products) {
 
   const skuNumberString = String(skuNumber).padStart(6, "0");
 
-  // Increment skuCounter only for new products or color variants
-  if (product.size === 'premium' || product.price === 0) {
-    skuNumber--;
-  } else {
-    skuCounter[vendor]++;
-  }
-
   if (product.size === "premium") {
-    return `SHELF-premium-demand-${vendor}-${skuNumberString}`;
+    return `SHELF-premium-demand-${productName}-${skuNumberString}`;
   } else if (product.price === 0) {
-    return `SHELF-demand-${vendor}-${skuNumberString}`;
+    return `SHELF-demand-${productName}-${skuNumberString}`;
   } else {
-    return `SHELF-${fSnippet}${vendor}-${skuNumberString}`;
+    return `SHELF-${fSnippet}${productName}-${skuNumberString}`;
   }
 }
 
-function getFullSizeRankings(products, vendor, color) {
-  // Filter products by vendor and color, and sort by price descending
+function getFullSizeRankings(products, productName, color) {
+  // Filter products by product name and color, and sort by price descending
   const fullSizeProducts = products.filter(p => 
-    p.vendor.replace(/[\s\uFEFF\xA0]+/g, '').toUpperCase() === vendor &&
+    p.productName === productName &&
     p.color === color && 
     p.size !== "premium" && 
     p.price > 0
@@ -123,6 +122,7 @@ function getFullSizeRankings(products, vendor, color) {
 
   return rankings;
 }
+
  
   getElement("submitProduct").addEventListener("click", function () {
     const vendor = getElement("vendor").value;
