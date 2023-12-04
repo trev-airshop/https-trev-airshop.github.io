@@ -47,6 +47,7 @@ let productColorSkuNumber = {};
 // Event listener for the "Generate SKUs" button
 getElement("generateSKUs").addEventListener("click", function () {
     // Reset the related objects for a new batch of products
+    skuCounter = {};
     fullSizeRankings = {};
     productColorSkuNumber = {};
 
