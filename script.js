@@ -64,7 +64,6 @@ function generateSku(product, products) {
   const color = product.color;
   const isFullSize = product.size !== "premium" && product.price > 0;
 
-    // Initialize vendor in skuCounter if not present
   if (!skuCounter[vendor]) {
     skuCounter[vendor] = 0; // Start with 0 for each new vendor
   }
@@ -74,9 +73,10 @@ function generateSku(product, products) {
     productColorSkuNumber[productName] = {};
   }
 
-  // Increment SKU number for a new product or new color variant
+  // Check and increment SKU number for a new product or new color variant
   if (productColorSkuNumber[productName][color] === undefined) {
     skuCounter[vendor]++; // Increment SKU number
+    // Assign the incremented number to this color variant
     productColorSkuNumber[productName][color] = skuCounter[vendor];
   }
 
