@@ -41,22 +41,31 @@ document.addEventListener("DOMContentLoaded", function () {
 }
 
 getElement("generateSKUs").addEventListener("click", function () {
-  // Reset the SKU counter and related objects
-  skuCounter = {};
+  // Reset the related objects, but maintain the global SKU counter
   fullSizeRankings = {}; 
-  productColorSkuNumber = {}; // Also reset the product color SKU number
+  productColorSkuNumber = {}; 
+
+  // Create a set to track processed color variants
+  const processedVariants = new Set();
 
   // Iterate over each product in the products array
   for (let i = 0; i < products.length; i++) {
-    // Generate SKU for the product, passing the entire products array
-    const sku = generateSku(products[i], products);
-    // Add SKU to the product
-    products[i]["sku"] = sku;
+    const productKey = `${products[i].productName}-${products[i].color}`;
+    // Check if this product color variant has already been processed
+    if (!processedVariants.has(productKey)) {
+      processedVariants.add(productKey);
+
+      // Generate SKU for the product, passing the entire products array
+      const sku = generateSku(products[i], products);
+      // Add SKU to the product
+      products[i]["sku"] = sku;
+    }
   }
 
   // Update the table to show new SKUs
   updateTable();
 });
+
 
 function generateSku(product, products) {
   const vendor = product.vendor.replace(/[\s\uFEFF\xA0]+/g, '').toUpperCase();
