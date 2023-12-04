@@ -66,20 +66,22 @@ function generateSku(product, products) {
 
    // Initialize vendor in skuCounter if not present
   if (!skuCounter[vendor]) {
-    skuCounter[vendor] = {};
+    skuCounter[vendor] = 1; // Start with 1 for each new vendor
   }
 
-  // Initialize product name in skuCounter for the vendor if not present
-  if (!skuCounter[vendor][productName]) {
-    skuCounter[vendor][productName] = {};
-  }
+  // Use a continuous counter for each vendor
+  let skuNumber = skuCounter[vendor];
 
-  // Increment SKU number only for new color variants within the product
-  if (skuCounter[vendor][productName][color] === undefined) {
-    skuCounter[vendor][productName][color] = Object.keys(skuCounter[vendor][productName]).length + 1;
+  // Check if this color variant of the product has been processed before
+  if (!productColorSkuNumber[productName]) {
+    productColorSkuNumber[productName] = {};
   }
-
-  let skuNumber = skuCounter[vendor][productName][color];
+  if (!productColorSkuNumber[productName][color]) {
+    productColorSkuNumber[productName][color] = skuNumber;
+    skuCounter[vendor]++; // Only increment for a new color variant of the product
+  } else {
+    skuNumber = productColorSkuNumber[productName][color]; // Use existing SKU for same color variant
+  }
 
   let fSnippet = '';
 
