@@ -111,7 +111,7 @@ function generateSku(product, products) {
 
     const skuNumberString = String(skuNumber).padStart(6, "0");
 
-    if (product.size === "premium") {
+    if (product.size === "Premium Sample") {
         return `SHELF-premium-demand-${vendor}-${skuNumberString}`;
     } else if (product.size === "Free Sample") {
         return `SHELF-demand-${vendor}-${skuNumberString}`;
