@@ -64,24 +64,23 @@ function generateSku(product, products) {
   const color = product.color;
   const isFullSize = product.size !== "premium" && product.price > 0;
 
-   // Initialize vendor in skuCounter if not present
+    // Initialize vendor in skuCounter if not present
   if (!skuCounter[vendor]) {
-    skuCounter[vendor] = 1; // Start with 1 for each new vendor
+    skuCounter[vendor] = 0; // Start with 0 for each new vendor
   }
 
-  // Use a continuous counter for each vendor
-  let skuNumber = skuCounter[vendor];
-
-  // Check if this color variant of the product has been processed before
+  // Initialize productColorSkuNumber for tracking SKU numbers for color variants
   if (!productColorSkuNumber[productName]) {
     productColorSkuNumber[productName] = {};
   }
-  if (!productColorSkuNumber[productName][color]) {
-    productColorSkuNumber[productName][color] = skuNumber;
-    skuCounter[vendor]++; // Only increment for a new color variant of the product
-  } else {
-    skuNumber = productColorSkuNumber[productName][color]; // Use existing SKU for same color variant
+
+  // Increment SKU number for a new product or new color variant
+  if (productColorSkuNumber[productName][color] === undefined) {
+    skuCounter[vendor]++; // Increment SKU number
+    productColorSkuNumber[productName][color] = skuCounter[vendor];
   }
+
+  let skuNumber = productColorSkuNumber[productName][color];
 
   let fSnippet = '';
 
