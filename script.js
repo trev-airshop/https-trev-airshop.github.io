@@ -50,21 +50,12 @@ getElement("generateSKUs").addEventListener("click", function () {
     fullSizeRankings = {};
     productColorSkuNumber = {};
 
-    // Create a set to track processed color variants
-    const processedVariants = new Set();
-
     // Iterate over each product in the products array
     for (let i = 0; i < products.length; i++) {
-        const productKey = `${products[i].productName}-${products[i].color}`;
-        // Check if this product color variant has already been processed
-        if (!processedVariants.has(productKey)) {
-            processedVariants.add(productKey);
-
-            // Generate SKU for the product, passing the entire products array
-            const sku = generateSku(products[i], products);
-            // Add SKU to the product
-            products[i]["sku"] = sku;
-        }
+        // Generate SKU for each product, passing the entire products array
+        const sku = generateSku(products[i], products);
+        // Add SKU to the product
+        products[i]["sku"] = sku;
     }
 
     // Update the table to show new SKUs
