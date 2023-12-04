@@ -83,7 +83,12 @@ function generateSku(product, products) {
         skuCounter[vendor] = 0; // Start with 0 for each new vendor
     }
 
-    // Check if this is the first time encountering this color variant for the product
+    // Ensure productColorSkuNumber is properly initialized for the productName
+    if (!productColorSkuNumber[productName]) {
+        productColorSkuNumber[productName] = {};
+    }
+
+    // Ensure color is initialized for the productName
     if (productColorSkuNumber[productName][color] === undefined) {
         // Increment SKU number for a new color variant or new product
         skuCounter[vendor]++;
@@ -91,6 +96,7 @@ function generateSku(product, products) {
     }
 
     let skuNumber = productColorSkuNumber[productName][color];
+  
     let fSnippet = '';
 
     // Generate ranking for full-size products and add F snippet
