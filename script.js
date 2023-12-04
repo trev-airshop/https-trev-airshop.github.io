@@ -74,14 +74,20 @@ function generateSku(product, products) {
     productColorSkuNumber[productName] = {};
   }
 
-  // Increment SKU number only if this is a new color variant for the product
+  // Debugging log
+  console.log(`Processing: ${productName}, Color: ${color}, Current SKU: ${skuCounter[vendor]}`);
+
+  // Check if this is the first time encountering this color variant for the product
   if (productColorSkuNumber[productName][color] === undefined) {
+    // Increment SKU number for a new color variant or new product
     skuCounter[vendor]++;
     productColorSkuNumber[productName][color] = skuCounter[vendor];
+
+    // Debugging log
+    console.log(`New SKU assigned: ${skuCounter[vendor]} for ${productName}, Color: ${color}`);
   }
 
   let skuNumber = productColorSkuNumber[productName][color];
-
   let fSnippet = '';
 
   // Generate ranking for full-size products and add F snippet
