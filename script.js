@@ -401,7 +401,7 @@ addBlankRowButton.addEventListener("click", function() {
 document.getElementById("downloadShopifyCSV").addEventListener("click", downloadShopifyCSV);
 
 
-  // NEW COIDE SHOPIFY CSV END
+  // NEW CODE SHOPIFY CSV END
 
 
 });
