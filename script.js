@@ -308,56 +308,98 @@ addBlankRowButton.addEventListener("click", function() {
 
 });
  // NEW CODE START SHOPIFY CSV
-document.addEventListener("DOMContentLoaded", function() {
-    // Event listener for the button to download Shopify CSV
-    document.getElementById("downloadShopifyCSV").addEventListener("click", function() {
-        // Trigger file input
-        document.getElementById('headersFile').click();
-    });
 
-    // Event listener for the file input change
-    document.getElementById('headersFile').addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        const reader = new FileReader();
+  function downloadShopifyCSV() {
+    // Headers from the Shopify template
+    const headers = ["Handle", "Title", "Body (HTML)", "Vendor", "Product Category",	"Type",	"Tags",	"Published",	"Option1 Name",	"Option1 Value",	"Option2 Name",	"Option2 Value",	"Option3 Name",	"Option3 Value",	"Variant SKU",	"Variant Grams",	"Variant Inventory Tracker",	"Variant Inventory Qty",	"Variant Inventory Policy",	"Variant Fulfillment Service",	"Variant Price",	"Variant Compare At Price",	"Variant Requires Shipping",	"Variant Taxable",	"Variant Barcode",	"Image Src",	"Image Position",	"Image Alt Text",	"Gift Card",	"SEO Title",	"SEO Description",	"Google Shopping / Google Product Category",	"Google Shopping / Gender",	"Google Shopping / Age Group",	"Google Shopping / MPN",	"Google Shopping / AdWords Grouping",	"Google Shopping / AdWords Labels",	"Google Shopping / Condition",	"Google Shopping / Custom Product",	"Google Shopping / Custom Label 0",	"Google Shopping / Custom Label 1",	"Google Shopping / Custom Label 2",	"Google Shopping / Custom Label 3",	"Google Shopping / Custom Label 4",	"Variant Image",	"Variant Weight Unit",	"Variant Tax Code",	"Cost per item",	"Price / International",	"Compare At Price / International",	"Status"]; // List all headers here
 
-        reader.onload = function(e) {
-            // Parse CSV headers
-            const headers = e.target.result.trim().split(',');
+    // Hardcoded and dynamic values from the second row of the template
+    const defaultValues = {
+        "Handle": "", // Leave blank or add logic if needed
+        "Title": () => product.productName,
+        "Body (HTML)": "", // Leave blank or add logic if needed
+        "Vendor": () => product.vendor,
+        "Product Category": "",
+        "Type": () => product.productType
+        "Tags": "",
+        "Published": "TRUE", 
+        "Option1 Name": "",
+        "Option1 Value": "",
+        "Option2 Name": "",
+        "Option2 Value": "",
+        "Option3 Name": "",
+        "Option3 Value": "",
+        "Variant SKU": () => product.sku,
+        "Variant Grams": () => product.size,
+        "Variant Inventory Tracker": "Shopify",
+        "Variant Inventory Qty": "",
+        "Variant Inventory Policy": "deny", 
+        "Variant Fulfillment Service": "manual", 
+        "Variant Price": () => product.price,
+        "Variant Compare At Price": "",
+        "Variant Requires Shipping": "TRUE", 
+        "Variant Taxable": "TRUE", 
+        "Variant Barcode": () => product.barcode,
+        "Image Src": "",
+        "Image Position": "",
+        "Image Alt Text": "",
+        "Gift Card": "",
+        "SEO Title": "",
+        "SEO Description": "",
+        "Google Shopping / Google Product Category": "",
+        "Google Shopping / Gender": "",
+        "Google Shopping / Age Group": "",
+        "Google Shopping / MPN": "",
+        "Google Shopping / AdWords Grouping": "",
+        "Google Shopping / AdWords Labels": "",
+        "Google Shopping / Condition": "",
+        "Google Shopping / Custom Product": "",
+        "Google Shopping / Custom Label 0": "",
+        "Google Shopping / Custom Label 1": "",
+        "Google Shopping / Custom Label 2": "",
+        "Google Shopping / Custom Label 3": "",
+        "Google Shopping / Custom Label 4": "",
+        "Variant Image": "",
+        "Variant Weight Unit": "",
+        "Variant Tax Code": "",
+        "Cost per item": () => product.cost,
+        "Price / International": "",
+        "Compare At Price / International": "",
+        "Status": "Draft",
+        
+    };
 
-            // Generate and download Shopify CSV
-            downloadShopifyCSV(headers);
-        };
+    // Convert products to CSV
+    let csvContent = headers.join(",") + "\n";
 
-        reader.readAsText(file);
-    });
-
-    // Function to download Shopify CSV
-    function downloadShopifyCSV(headers) {
-        let csvContent = "data:text/csv;charset=utf-8,";
-
-        // Add headers to CSV content
-        csvContent += headers.join(",") + "\n";
-
-        // Iterate over each product to add to the CSV
-        products.forEach(product => {
-            let row = headers.map(header => {
-                return product[header] || ""; // Map product data or use empty string
-            });
-
-            csvContent += row.join(",") + "\n";
+    products.forEach(product => {
+        let row = headers.map(header => {
+            if (defaultValues[header]) {
+                if (typeof defaultValues[header] === "function") {
+                    // If the value is a function, execute it to get dynamic data
+                    return defaultValues[header]();
+                }
+                return defaultValues[header]; // Use hardcoded value
+            }
+            return product[header] || ""; // Use the value from the product or an empty string if undefined
         });
 
-        // Create a download link and trigger the download
-        var encodedUri = encodeURI(csvContent);
-        var link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "shopify_products.csv");
-        document.body.appendChild(link); // Required for Firefox
+        csvContent += row.join(",") + "\n";
+    });
 
-        link.click();
-        document.body.removeChild(link); // Clean up
-    }
-});
+    // Create and download the CSV file
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "Shopify_Products.csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// Add the event listener to your button
+document.getElementById("downloadShopifyCSV").addEventListener("click", downloadShopifyCSV);
+
 
   // NEW COIDE SHOPIFY CSV END
 
