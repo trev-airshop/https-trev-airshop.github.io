@@ -307,7 +307,8 @@ addBlankRowButton.addEventListener("click", function() {
   submissionBody.appendChild(row);
 
 });
- // NEW CODE START SHOPIFY CSV
+ 
+  // NEW CODE START SHOPIFY CSV
 
   function downloadShopifyCSV() {
     // Headers from the Shopify template
@@ -320,7 +321,7 @@ addBlankRowButton.addEventListener("click", function() {
         "Body (HTML)": "", // Leave blank or add logic if needed
         "Vendor": () => product.vendor,
         "Product Category": "",
-        "Type": () => product.productType
+        "Type": () => product.productType,
         "Tags": "",
         "Published": "TRUE", 
         "Option1 Name": "",
