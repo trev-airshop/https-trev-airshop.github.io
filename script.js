@@ -375,16 +375,14 @@ addBlankRowButton.addEventListener("click", function() {
 
     products.forEach(product => {
         let row = headers.map(header => {
-            if (defaultValues[header]) {
-                if (typeof defaultValues[header] === "function") {
-                    // If the value is a function, execute it to get dynamic data
-                    return defaultValues[header](product);
-                }
-                return defaultValues[header]; // Use hardcoded value
-            }
-            return product[header] || ""; // Use the value from the product or an empty string if undefined
-        });
-
+        if (typeof defaultValues[header] === "function") {
+            // Correctly passing 'product' to the function
+            return defaultValues[header](product);
+        } else {
+            // Use hardcoded value or value from the product
+            return defaultValues[header] || product[header] || "";
+        }
+    });
         csvContent += row.join(",") + "\n";
     });
 
