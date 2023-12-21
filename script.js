@@ -307,5 +307,59 @@ addBlankRowButton.addEventListener("click", function() {
   submissionBody.appendChild(row);
 
 });
+ // NEW CODE START SHOPIFY CSV
+document.addEventListener("DOMContentLoaded", function() {
+    // Event listener for the button to download Shopify CSV
+    document.getElementById("downloadShopifyCSV").addEventListener("click", function() {
+        // Trigger file input
+        document.getElementById('headersFile').click();
+    });
+
+    // Event listener for the file input change
+    document.getElementById('headersFile').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            // Parse CSV headers
+            const headers = e.target.result.trim().split(',');
+
+            // Generate and download Shopify CSV
+            downloadShopifyCSV(headers);
+        };
+
+        reader.readAsText(file);
+    });
+
+    // Function to download Shopify CSV
+    function downloadShopifyCSV(headers) {
+        let csvContent = "data:text/csv;charset=utf-8,";
+
+        // Add headers to CSV content
+        csvContent += headers.join(",") + "\n";
+
+        // Iterate over each product to add to the CSV
+        products.forEach(product => {
+            let row = headers.map(header => {
+                return product[header] || ""; // Map product data or use empty string
+            });
+
+            csvContent += row.join(",") + "\n";
+        });
+
+        // Create a download link and trigger the download
+        var encodedUri = encodeURI(csvContent);
+        var link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "shopify_products.csv");
+        document.body.appendChild(link); // Required for Firefox
+
+        link.click();
+        document.body.removeChild(link); // Clean up
+    }
+});
+
+  // NEW COIDE SHOPIFY CSV END
+
 
 });
