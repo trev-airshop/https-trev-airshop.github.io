@@ -378,7 +378,7 @@ addBlankRowButton.addEventListener("click", function() {
             if (defaultValues[header]) {
                 if (typeof defaultValues[header] === "function") {
                     // If the value is a function, execute it to get dynamic data
-                    return defaultValues[header]();
+                    return defaultValues[header](product);
                 }
                 return defaultValues[header]; // Use hardcoded value
             }
