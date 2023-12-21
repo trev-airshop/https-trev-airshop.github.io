@@ -331,7 +331,7 @@ addBlankRowButton.addEventListener("click", function() {
         "Option3 Name": "",
         "Option3 Value": "",
         "Variant SKU": (product) => product.sku,
-        "Variant Grams": (product) => product.size,
+        "Variant Grams": (product) => typeof product.size === 'number' ? product.size : "",
         "Variant Inventory Tracker": "Shopify",
         "Variant Inventory Qty": "",
         "Variant Inventory Policy": "deny", 
