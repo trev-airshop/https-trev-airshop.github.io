@@ -170,7 +170,7 @@ function getFullSizeRankings(products, productName, color) {
     console.log(`Ranking for ${productKey}: ${rankings[productKey]}`);
   });
 
-  return rankings{
+  return {
         rankings: rankings,
         count: fullSizeProducts.length
     };
