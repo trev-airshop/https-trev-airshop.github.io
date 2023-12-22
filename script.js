@@ -341,12 +341,7 @@ addBlankRowButton.addEventListener("click", function() {
         "Title": (product) => product.productName,
         "Body (HTML)": "", // Leave blank or add logic if needed
         "Vendor": (product) => product.vendor,
-        "Product Category": (product) => {
-          console.log("Product Type:", product.productType);
-          const details = typeToDetailsMap[product.productType];
-          console.log("Category Details:", details);
-          return details ? details.category : "";
-        },
+        "Product Category": "",
         "Type": (product) => product.productType,
         "Tags": (product) => {
           const details = typeToDetailsMap[product.productType];
