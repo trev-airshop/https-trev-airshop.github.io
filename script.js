@@ -350,7 +350,7 @@ addBlankRowButton.addEventListener("click", function() {
         "Option1 Name": (product) => product.color ? "Color" : "Size",
         "Option1 Value": (product) => product.color || product.size + ' mL',
         "Option2 Name": (product) => product.color ? "Size" : "",
-        "Option2 Value": (product) => product.color ? product.size : "",
+        "Option2 Value": (product) => product.color ? product.size + ' mL' : "",
         "Option3 Name": "",
         "Option3 Value": "",
         "Variant SKU": (product) => product.sku,
