@@ -119,9 +119,12 @@ function generateSku(product, products) {
             fullSizeRankings[productName][color] = getFullSizeRankings(products, productName, color);
         }
 
+        const fullSizeInfo = fullSizeRankings[productName][color] || getFullSizeRankings(products, productName, color);
+        fullSizeRankings[productName][color] = fullSizeInfo; // Store the updated info
+
         const productKey = `${productName}-${product.size}-${product.price}`;
-        const ranking = fullSizeRankings[productName][color][productKey];
-        const numberOfFullSizeVariants = Object.keys(fullSizeRankings[productName][color]).length;
+        const ranking = fullSizeInfo.rankings[productKey];
+        const numberOfFullSizeVariants = fullSizeInfo.count;
 
         if (ranking && numberOfFullSizeVariants > 1) {
             fSnippet = `F${ranking}-`;
@@ -167,7 +170,10 @@ function getFullSizeRankings(products, productName, color) {
     console.log(`Ranking for ${productKey}: ${rankings[productKey]}`);
   });
 
-  return rankings;
+  return rankings{
+        rankings: rankings,
+        count: fullSizeProducts.length
+    };
 }
 
 
