@@ -87,7 +87,7 @@ function generateSku(product, products) {
     const vendor = product.vendor.replace(/[\s\uFEFF\xA0]+/g, '').toUpperCase();
     const productName = product.productName;
     const color = product.color;
-    const isFullSize = product.size !== "premium" && product.price > 0;
+    const isFullSize = product.size !== "Premium Sample" && product.price > 0;
 
     // Initialize vendor in skuCounter if not present
     if (!skuCounter[vendor]) {
@@ -112,32 +112,22 @@ function generateSku(product, products) {
 
     // Generate ranking for full-size products and add F snippet
     if (isFullSize) {
-        // Count the number of full-size variants for the same product and color
-        let fullSizeVariantCount = products.filter(p => 
-            p.productName === product.productName && 
-            p.color === product.color && 
-            p.size !== "Premium Sample" && 
-            p.price > 0).length;
+        if (!fullSizeRankings[productName]) {
+            fullSizeRankings[productName] = {};
+        }
+        if (!fullSizeRankings[productName][color]) {
+            fullSizeRankings[productName][color] = getFullSizeRankings(products, productName, color);
+        }
 
-        // Add fSnippet only if there are more than one full-size variants
-        if (fullSizeVariantCount > 1) {
-            if (!fullSizeRankings[productName]) {
-                fullSizeRankings[productName] = {};
-            }
+        const productKey = `${productName}-${product.size}-${product.price}`;
+        const ranking = fullSizeRankings[productName][color][productKey];
+        const numberOfFullSizeVariants = Object.keys(fullSizeRankings[productName][color]).length;
 
-            if (!fullSizeRankings[productName][color]) {
-                fullSizeRankings[productName][color] = getFullSizeRankings(products, productName, color);
-            }
-
-            const productKey = `${productName}-${product.size}-${product.price}`;
-            const ranking = fullSizeRankings[productName][color].rankings[productKey];
-
-            if (ranking) {
-                fSnippet = `F${ranking}-`;
-            }
+        if (ranking && numberOfFullSizeVariants > 1) {
+            fSnippet = `F${ranking}-`;
         }
     }
-  
+
     const skuNumberString = String(skuNumber).padStart(6, "0");
 
     if (product.size === "Premium Sample") {
@@ -177,14 +167,8 @@ function getFullSizeRankings(products, productName, color) {
     console.log(`Ranking for ${productKey}: ${rankings[productKey]}`);
   });
 
-  return {
-        rankings: rankings,
-        count: fullSizeProducts.length
-    };
+  return rankings;
 }
-
-
-
  
   getElement("submitProduct").addEventListener("click", function () {
     const vendor = getElement("vendor").value;
