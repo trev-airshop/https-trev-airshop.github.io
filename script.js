@@ -112,25 +112,32 @@ function generateSku(product, products) {
 
     // Generate ranking for full-size products and add F snippet
     if (isFullSize) {
-        if (!fullSizeRankings[productName]) {
-            fullSizeRankings[productName] = {};
-        }
-        if (!fullSizeRankings[productName][color]) {
-            fullSizeRankings[productName][color] = getFullSizeRankings(products, productName, color);
-        }
+        // Count the number of full-size variants for the same product and color
+        let fullSizeVariantCount = products.filter(p => 
+            p.productName === product.productName && 
+            p.color === product.color && 
+            p.size !== "Premium Sample" && 
+            p.price > 0).length;
 
-        const fullSizeInfo = fullSizeRankings[productName][color] || getFullSizeRankings(products, productName, color);
-        fullSizeRankings[productName][color] = fullSizeInfo; // Store the updated info
+        // Add fSnippet only if there are more than one full-size variants
+        if (fullSizeVariantCount > 1) {
+            if (!fullSizeRankings[productName]) {
+                fullSizeRankings[productName] = {};
+            }
 
-        const productKey = `${productName}-${product.size}-${product.price}`;
-        const ranking = fullSizeInfo.rankings[productKey];
-        const numberOfFullSizeVariants = fullSizeInfo.count;
+            if (!fullSizeRankings[productName][color]) {
+                fullSizeRankings[productName][color] = getFullSizeRankings(products, productName, color);
+            }
 
-        if (ranking && numberOfFullSizeVariants > 1) {
-            fSnippet = `F${ranking}-`;
+            const productKey = `${productName}-${product.size}-${product.price}`;
+            const ranking = fullSizeRankings[productName][color].rankings[productKey];
+
+            if (ranking) {
+                fSnippet = `F${ranking}-`;
+            }
         }
     }
-
+  
     const skuNumberString = String(skuNumber).padStart(6, "0");
 
     if (product.size === "Premium Sample") {
