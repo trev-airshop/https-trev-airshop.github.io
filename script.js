@@ -348,7 +348,7 @@ addBlankRowButton.addEventListener("click", function() {
         },
         "Published": "TRUE", 
         "Option1 Name": (product) => product.color ? "Color" : "Size",
-        "Option1 Value": (product) => product.color || product.size,
+        "Option1 Value": (product) => product.color || product.size + ' mL',
         "Option2 Name": (product) => product.color ? "Size" : "",
         "Option2 Value": (product) => product.color ? product.size : "",
         "Option3 Name": "",
