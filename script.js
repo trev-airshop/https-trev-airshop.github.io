@@ -148,7 +148,7 @@ function getFullSizeRankings(products, productName, color) {
   const fullSizeProducts = products.filter(p => 
     p.productName === productName &&
     p.color === color && 
-    p.size !== "premium" && p.size !== "Free Sample" &&
+    p.size !== "Premium Sample" && p.size !== "Free Sample" &&
     p.price > 0
   );
 
