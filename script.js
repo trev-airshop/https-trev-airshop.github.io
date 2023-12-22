@@ -344,8 +344,14 @@ addBlankRowButton.addEventListener("click", function() {
         "Type": (product) => product.productType,
         "Tags": (product) => {
           const details = typeToDetailsMap[product.productType];
-          return details ? `"${details.tags}"` : "";
-        },
+          let tags = details ? details.tags : "";
+          // Check if product size is "Premium Sample" and append a snippet to tags
+          if (product.size === "Premium Sample") {
+              const deluxe = ", premium";  // Replace with your actual snippet
+              tags = tags ? `${tags}, ${deluxe}` : deluxe;
+          }
+          return `"${tags}"`; // Return tags enclosed in quotes
+      },
         "Published": "TRUE", 
         "Option1 Name": (product) => product.color ? "Color" : "Size",
         "Option1 Value": (product) => product.color || product.size + ' mL',
