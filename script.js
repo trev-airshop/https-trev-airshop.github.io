@@ -356,17 +356,20 @@ addBlankRowButton.addEventListener("click", function() {
         "Option1 Name": (product) => product.color ? "Color" : "Size",
         "Option1 Value": (product) => {
           if (product.color) {
-              return product.color;
+              return product.productName + " " + product.color;
           } else {
-              // Append ' mL' only if size is a number
-              return typeof product.size === 'number' ? product.size + ' mL' : product.size;
+              const size = parseFloat(product.size);
+        // Append ' mL' if the parsed size is a number
+              return !isNaN(size) ? size + ' mL' : product.size;
           }
       },
         "Option2 Name": (product) => product.color ? "Size" : "",
         "Option2 Value": (product) => {
           if (product.color) {
-              // Append ' mL' only if size is a number
-              return typeof product.size === 'number' ? product.size + ' mL' : product.size;
+            // Attempt to parse the size as a float
+            const size = parseFloat(product.size);
+            // Append ' mL' if the parsed size is a number
+            return !isNaN(size) ? size + ' mL' : product.size;
           }
           return "";
       },
