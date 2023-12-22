@@ -358,18 +358,13 @@ addBlankRowButton.addEventListener("click", function() {
           if (product.color) {
               return product.productName + " " + product.color;
           } else {
-              const size = parseFloat(product.size);
-        // Append ' mL' if the parsed size is a number
-              return !isNaN(size) ? size + ' mL' : product.size;
+             return product.size > 0 ? product.size + ' mL' : product.size;
           }
       },
         "Option2 Name": (product) => product.color ? "Size" : "",
         "Option2 Value": (product) => {
           if (product.color) {
-            // Attempt to parse the size as a float
-            const size = parseFloat(product.size);
-            // Append ' mL' if the parsed size is a number
-            return !isNaN(size) ? size + ' mL' : product.size;
+            return product.size > 0 ? product.size + ' mL' : product.size;
           }
           return "";
       },
