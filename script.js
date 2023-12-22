@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
             results.data.forEach(row => {
                 const type = row['Type'];
                 const category = row['Category'];
-                const tags = row['tags'];
+                const tags = row['Tags'];
                 typeToDetailsMap[type] = { category, tags };
             });
 
