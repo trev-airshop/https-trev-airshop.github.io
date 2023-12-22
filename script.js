@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
             results.data.forEach(row => {
                 const type = row['Type'];
                 const category = row['Category'];
-                const tags = row['Tags'];
+                const tags = row['tags'];
                 typeToDetailsMap[type] = { category, tags };
             });
 
@@ -340,9 +340,13 @@ addBlankRowButton.addEventListener("click", function() {
         "Title": (product) => product.productName,
         "Body (HTML)": "", // Leave blank or add logic if needed
         "Vendor": (product) => product.vendor,
-        "Product Category": "",
+        "Product Category": (product) => {
+          const details = typeToDetailsMap[product.productType];
+          return details ? details.category : "";
         "Type": (product) => product.productType,
-        "Tags": "",
+        "Tags": (product) => {
+          const details = typeToDetailsMap[product.productType];
+          return details ? details.tags : "";
         "Published": "TRUE", 
         "Option1 Name": (product) => product.color ? "Color" : "Size",
         "Option1 Value": (product) => product.color || product.size,
