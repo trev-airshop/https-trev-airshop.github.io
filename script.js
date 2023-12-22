@@ -211,7 +211,7 @@ function getFullSizeRankings(products, productName, color) {
   getElement("downloadCSV").addEventListener("click", function () {
     downloadCSV(products);
   });
-
+/*
   // Function to download the CSV file
   function downloadCSV(data) {
     const csv = convertToCSV(data);
@@ -234,6 +234,8 @@ function getFullSizeRankings(products, productName, color) {
     const csvRows = data.map((row) => Object.values(row).join(","));
     return [header, ...csvRows].join("\n");
   }
+
+*/
 
   // Function to create input elements
   function createInput(type, name, placeholder) {
