@@ -26,6 +26,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 const tags = row['tags'];
                 typeToDetailsMap[type] = { category, tags };
             });
+
+           console.log("Type to Details Map:", typeToDetailsMap);
         }
     });
 
@@ -339,7 +341,9 @@ addBlankRowButton.addEventListener("click", function() {
         "Body (HTML)": "", // Leave blank or add logic if needed
         "Vendor": (product) => product.vendor,
         "Product Category": (product) => {
+          console.log("Product Type:", product.productType);
           const details = typeToDetailsMap[product.productType];
+          console.log("Category Details:", details);
           return details ? details.category : "";
         },
         "Type": (product) => product.productType,
