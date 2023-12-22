@@ -347,16 +347,29 @@ addBlankRowButton.addEventListener("click", function() {
           let tags = details ? details.tags : "";
           // Check if product size is "Premium Sample" and append a snippet to tags
           if (product.size === "Premium Sample") {
-              const deluxe = ", premium";  // Replace with your actual snippet
+              const deluxe = "premium";  // Replace with your actual snippet
               tags = tags ? `${tags}, ${deluxe}` : deluxe;
           }
           return `"${tags}"`; // Return tags enclosed in quotes
       },
         "Published": "TRUE", 
         "Option1 Name": (product) => product.color ? "Color" : "Size",
-        "Option1 Value": (product) => product.color || product.size + ' mL',
+        "Option1 Value": (product) => {
+          if (product.color) {
+              return product.color;
+          } else {
+              // Append ' mL' only if size is a number
+              return typeof product.size === 'number' ? product.size + ' mL' : product.size;
+          }
+      },
         "Option2 Name": (product) => product.color ? "Size" : "",
-        "Option2 Value": (product) => product.color ? product.size + ' mL' : "",
+        "Option2 Value": (product) => {
+          if (product.color) {
+              // Append ' mL' only if size is a number
+              return typeof product.size === 'number' ? product.size + ' mL' : product.size;
+          }
+          return "";
+      },
         "Option3 Name": "",
         "Option3 Value": "",
         "Variant SKU": (product) => product.sku,
