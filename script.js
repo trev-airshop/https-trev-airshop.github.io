@@ -353,10 +353,10 @@ addBlankRowButton.addEventListener("click", function() {
           return `"${tags}"`; // Return tags enclosed in quotes
       },
         "Published": "TRUE", 
-        "Option1 Name": (product) => product.color ? "Color" : "Size",
+        "Option1 Name": (product) => product.color ? product.productName + " " + "Color" : "Size",
         "Option1 Value": (product) => {
           if (product.color) {
-              return product.productName + " " + product.color;
+              return product.color;
           } else {
              return product.size > 0 ? product.size + ' mL' : product.size;
           }
