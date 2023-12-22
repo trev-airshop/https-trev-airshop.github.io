@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
     Papa.parse('https://raw.githubusercontent.com/trev-airshop/https-trev-airshop.github.io/main/merchtypes.csv?token=GHSAT0AAAAAACKIJ7RCNELJD4JTAS5SNNEQZKS4YDA', {
         download: true,
         header: true,
+        transformHeader: header => header.trim(),
         complete: function(results) {
             results.data.forEach(row => {
                 const type = row['Type'];
@@ -349,7 +350,7 @@ addBlankRowButton.addEventListener("click", function() {
         "Type": (product) => product.productType,
         "Tags": (product) => {
           const details = typeToDetailsMap[product.productType];
-          return details ? details.tags : "";
+          return details ? `"${details.tags}"` : "";
         },
         "Published": "TRUE", 
         "Option1 Name": (product) => product.color ? "Color" : "Size",
