@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // PapaParse code to parse the CSV file
     let typeToDetailsMap = {};
 
-    Papa.parse('path/to/your/csv/file.csv', {
+    Papa.parse('https://raw.githubusercontent.com/trev-airshop/https-trev-airshop.github.io/main/merchtypes.csv?token=GHSAT0AAAAAACKIJ7RCNELJD4JTAS5SNNEQZKS4YDA', {
         download: true,
         header: true,
         complete: function(results) {
@@ -26,8 +26,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 const tags = row['tags'];
                 typeToDetailsMap[type] = { category, tags };
             });
-
-            // You can now use typeToDetailsMap in your application
         }
     });
 
