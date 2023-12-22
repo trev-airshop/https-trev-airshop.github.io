@@ -343,10 +343,12 @@ addBlankRowButton.addEventListener("click", function() {
         "Product Category": (product) => {
           const details = typeToDetailsMap[product.productType];
           return details ? details.category : "";
+        }
         "Type": (product) => product.productType,
         "Tags": (product) => {
           const details = typeToDetailsMap[product.productType];
           return details ? details.tags : "";
+        }
         "Published": "TRUE", 
         "Option1 Name": (product) => product.color ? "Color" : "Size",
         "Option1 Value": (product) => product.color || product.size,
