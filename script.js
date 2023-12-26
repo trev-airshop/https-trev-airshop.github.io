@@ -208,10 +208,11 @@ function getFullSizeRankings(products, productName, color) {
     updateTable();
   });
 
+  /*
   getElement("downloadCSV").addEventListener("click", function () {
     downloadCSV(products);
   });
-/*
+
   // Function to download the CSV file
   function downloadCSV(data) {
     const csv = convertToCSV(data);
