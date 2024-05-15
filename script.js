@@ -378,11 +378,15 @@ addBlankRowButton.addEventListener("click", function() {
         "Variant Inventory Policy": "deny", 
         "Variant Fulfillment Service": "manual", 
         "Variant Price": (product) => {
-          const basePrice = product.size === 'Premium Sample' ? product.price / 2 : product.price;
-          const remainder = basePrice % 1;
-          const adjustment = (remainder >= 0.75 || (remainder < 0.25 && remainder >= 0)) ? 0.99 : 0.49;
-          return Math.floor(basePrice) + adjustment;
-          },
+          let basePrice = product.price;
+          if (product.size === 'Premium Sample') {
+            basePrice /= 2;
+            const remainder = basePrice % 1;
+            const adjustment = (remainder >= 0.75 || (remainder < 0.25 && remainder >= 0)) ? 0.99 : 0.49;
+            basePrice = Math.floor(basePrice) + adjustment;
+          }
+          return basePrice;
+        },
         "Variant Compare At Price": (product) => product.price,
         "Variant Requires Shipping": "TRUE", 
         "Variant Taxable": "TRUE", 
