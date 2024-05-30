@@ -387,7 +387,7 @@ addBlankRowButton.addEventListener("click", function() {
           }
           return basePrice;
         },
-        "Variant Compare At Price": (product) => product.price,
+        "Variant Compare At Price": (product) => product.size === "Premium Sample" ? product.price : null,
         "Variant Requires Shipping": "TRUE", 
         "Variant Taxable": "TRUE", 
         "Variant Barcode": (product) => product.barcode,
