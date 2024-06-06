@@ -103,7 +103,7 @@ function generateSku(product, products) {
     if (productColorSkuNumber[productName][color] === undefined) {
         // Increment SKU number for a new color variant or new product
         skuCounter[vendor]++;
-        productColorSkuNumber[productName][color] = skuCounter[vendor];
+        productColorSkuNumber[productName][color] kuCounter[vendor];
     }
 
     let skuNumber = productColorSkuNumber[productName][color];
@@ -180,14 +180,6 @@ function getFullSizeRankings(products, productName, color) {
     const priceInputs = Array.from(document.getElementsByName("price"));
     const costInputs = Array.from(document.getElementsByName("cost"));
     const barcodeInputs = Array.from(document.getElementsByName("barcode"));
-
-    sizeInputs.forEach((sizeInput, index) => {
-      if (sizeInput.value === 'Premium Sample') {
-          priceInputs[index].value = parseFloat(costInputs[index].value) * 2;
-      } else {
-          priceInputs[index].value = parseFloat(costInputs[index].value);
-      }
-    });
 
     // Generate rows for each variant combination
     for (let i = 0; i < (colorInputs.length || 1); i++) {
