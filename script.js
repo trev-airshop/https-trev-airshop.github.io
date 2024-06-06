@@ -185,8 +185,16 @@ function getFullSizeRankings(products, productName, color) {
     for (let i = 0; i < (colorInputs.length || 1); i++) {
       for (let j = 0; j < sizeInputs.length; j++) {
         const size = sizeInputs[j].value || "";
-        const price = priceInputs[j].value || 0;
+        // const price = priceInputs[j].value || 0;
         const cost = costInputs[j].value || 0;
+        let price;
+
+        if (size === 'Premium Sample') {
+            price = cost * 2;
+        } else {
+            price = parseFloat(priceInputs[j].value) || 0;
+        }
+        
         const barcode = barcodeInputs[j].value || "";
 
         const productData = {
