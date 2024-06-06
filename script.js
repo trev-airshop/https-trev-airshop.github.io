@@ -377,7 +377,7 @@ addBlankRowButton.addEventListener("click", function() {
         "Variant Inventory Qty": "",
         "Variant Inventory Policy": "deny", 
         "Variant Fulfillment Service": "manual", 
-        "Variant Price": (product) =>  product.price /* {
+        "Variant Price": (product) => {
           let basePrice = product.price;
           if (product.size === 'Premium Sample') {
             basePrice /= 2;
@@ -386,8 +386,8 @@ addBlankRowButton.addEventListener("click", function() {
             basePrice = Math.floor(basePrice) + adjustment;
           }
           return basePrice;
-        }, */
-        "Variant Compare At Price": (product) => product.size === "Premium Sample" ? product.price * 4 : product.price,
+        },
+        "Variant Compare At Price": (product) => product.size === "Premium Sample" ? product.cost * 4 : product.price,
         "Variant Requires Shipping": "TRUE", 
         "Variant Taxable": "TRUE", 
         "Variant Barcode": (product) => product.barcode,
