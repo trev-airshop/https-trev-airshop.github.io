@@ -395,7 +395,7 @@ addBlankRowButton.addEventListener("click", function() {
           }
           return basePrice;
         },*/
-        "Variant Compare At Price": (product) => product.size === "Premium Sample" ? product.price * 2 : product.price,
+        "Variant Compare At Price": (product) => product.size === "Premium Sample" ? product.price * 2 : null,
         "Variant Requires Shipping": "TRUE", 
         "Variant Taxable": "TRUE", 
         "Variant Barcode": (product) => product.barcode,
@@ -448,7 +448,8 @@ products.forEach(product => {
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = "Shopify_Products.csv";
+    // link.download = "Shopify_Products.csv";
+    link.download = `${products[0].vendor}.csv`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
