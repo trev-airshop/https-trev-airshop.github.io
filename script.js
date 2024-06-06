@@ -181,6 +181,14 @@ function getFullSizeRankings(products, productName, color) {
     const costInputs = Array.from(document.getElementsByName("cost"));
     const barcodeInputs = Array.from(document.getElementsByName("barcode"));
 
+     sizeInputs.forEach((sizeInput, index) => {
+        if (sizeInput.value === 'Premium Sample') {
+            priceInputs[index].value = parseFloat(costInputs[index].value) * 2;
+        } else {
+            priceInputs[index].value = parseFloat(costInputs[index].value);
+        }
+    });
+
     // Generate rows for each variant combination
     for (let i = 0; i < (colorInputs.length || 1); i++) {
       for (let j = 0; j < sizeInputs.length; j++) {
@@ -377,7 +385,7 @@ addBlankRowButton.addEventListener("click", function() {
         "Variant Inventory Qty": "",
         "Variant Inventory Policy": "deny", 
         "Variant Fulfillment Service": "manual", 
-        "Variant Price": (product) => {
+        "Variant Price": (product) =>  product.price /* {
           let basePrice = product.price;
           if (product.size === 'Premium Sample') {
             basePrice /= 2;
@@ -386,8 +394,8 @@ addBlankRowButton.addEventListener("click", function() {
             basePrice = Math.floor(basePrice) + adjustment;
           }
           return basePrice;
-        },
-        "Variant Compare At Price": (product) => product.size === "Premium Sample" ? product.price : null,
+        }, */
+        "Variant Compare At Price": (product) => product.size === "Premium Sample" ? product.price * 4 : product.price,
         "Variant Requires Shipping": "TRUE", 
         "Variant Taxable": "TRUE", 
         "Variant Barcode": (product) => product.barcode,
