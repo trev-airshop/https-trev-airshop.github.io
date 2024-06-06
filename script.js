@@ -449,7 +449,8 @@ products.forEach(product => {
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     // link.download = "Shopify_Products.csv";
-    link.download = `${products[0].vendor.replace(/[\s\uFEFF\xA0]+/g, '')}.csv`;
+    const formattedVendor = products[0].vendor.replace(/[\s\uFEFF\xA0]+/g, '').replace(/[^a-zA-Z0-9]/g, '');
+    link.download = `${formattedVendor}.csv`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
