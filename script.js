@@ -103,7 +103,7 @@ function generateSku(product, products) {
     if (productColorSkuNumber[productName][color] === undefined) {
         // Increment SKU number for a new color variant or new product
         skuCounter[vendor]++;
-        productColorSkuNumber[productName][color] kuCounter[vendor];
+        productColorSkuNumber[productName][color] = skuCounter[vendor];
     }
 
     let skuNumber = productColorSkuNumber[productName][color];
