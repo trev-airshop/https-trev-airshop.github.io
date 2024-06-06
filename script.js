@@ -181,12 +181,12 @@ function getFullSizeRankings(products, productName, color) {
     const costInputs = Array.from(document.getElementsByName("cost"));
     const barcodeInputs = Array.from(document.getElementsByName("barcode"));
 
-     sizeInputs.forEach((sizeInput, index) => {
-        if (sizeInput.value === 'Premium Sample') {
-            priceInputs[index].value = parseFloat(costInputs[index].value) * 2;
-        } else {
-            priceInputs[index].value = parseFloat(costInputs[index].value);
-        }
+    sizeInputs.forEach((sizeInput, index) => {
+      if (sizeInput.value === 'Premium Sample') {
+          priceInputs[index].value = parseFloat(costInputs[index].value) * 2;
+      } else {
+          priceInputs[index].value = parseFloat(costInputs[index].value);
+      }
     });
 
     // Generate rows for each variant combination
