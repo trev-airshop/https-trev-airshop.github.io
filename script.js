@@ -300,7 +300,8 @@ document.addEventListener("DOMContentLoaded", function () {
       "Product Category": "",
       "Type": (product) => product.productType,
       "Tags": (product) => {
-        let tags = "";
+        const details = typeToDetailsMap[product.productType];
+        let tags = details ? details.tags : "";
 
         // Add "premium" tag for Premium Sample
         if (product.size === "Premium Sample") {
