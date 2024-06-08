@@ -13,25 +13,6 @@ document.addEventListener("DOMContentLoaded", function () {
     colorVariantsContainer.appendChild(colorInput);
   });
 
-  // PapaParse code to parse the CSV file
-    let typeToDetailsMap = {};
-
-    Papa.parse('https://raw.githubusercontent.com/trev-airshop/https-trev-airshop.github.io/main/merchtypes.csv?token=GHSAT0AAAAAACKIJ7RCNELJD4JTAS5SNNEQZKS4YDA', {
-        download: true,
-        header: true,
-        transformHeader: header => header.trim(),
-        complete: function(results) {
-            results.data.forEach(row => {
-                const type = row['Type'];
-                const category = row['Category'];
-                const tags = row['Tags'];
-                typeToDetailsMap[type] = { category, tags };
-            });
-
-           console.log("Type to Details Map:", typeToDetailsMap);
-        }
-    });
-
   addSizeVariantButton.addEventListener("click", function () {
     const sizeInput = createInput("text", "size", "Size Variant");
     const priceInput = createInput("text", "price", "Price");
@@ -43,133 +24,113 @@ document.addEventListener("DOMContentLoaded", function () {
     sizeVariantsContainer.appendChild(costInput);
     sizeVariantsContainer.appendChild(barcodeInput);
 
-    // Show the "Barcode" input when adding size variants
     barcodeInput.style.display = "block";
   });
 
   function addDeleteButtonToRow(row, index) {
-  const deleteButton = document.createElement("button");
-  deleteButton.innerText = "-";
-  deleteButton.className = "delete-button";
-  deleteButton.addEventListener("click", function() {
-    row.remove();
-    products.splice(index, 1);
-    updateTable();
-  });
-  row.appendChild(deleteButton);
-}
+    const deleteButton = document.createElement("button");
+    deleteButton.innerText = "-";
+    deleteButton.className = "delete-button";
+    deleteButton.addEventListener("click", function() {
+      row.remove();
+      products.splice(index, 1);
+      updateTable();
+    });
+    row.appendChild(deleteButton);
+  }
 
-let skuCounter = {};
-let fullSizeRankings = {};
-let productColorSkuNumber = {};
+  let skuCounter = {};
+  let fullSizeRankings = {};
+  let productColorSkuNumber = {};
 
-// Event listener for the "Generate SKUs" button
-getElement("generateSKUs").addEventListener("click", function () {
-    // Reset the related objects for a new batch of products
+  getElement("generateSKUs").addEventListener("click", function () {
     skuCounter = {};
     fullSizeRankings = {};
     productColorSkuNumber = {};
 
-    // Iterate over each product in the products array
     for (let i = 0; i < products.length; i++) {
-        // Generate SKU for each product, passing the entire products array
-        const sku = generateSku(products[i], products);
-        // Add SKU to the product
-        products[i]["sku"] = sku;
+      const sku = generateSku(products[i], products);
+      products[i]["sku"] = sku;
     }
 
-    // Update the table to show new SKUs
     updateTable();
-});
+  });
 
-// Function to generate SKU
-function generateSku(product, products) {
+  function generateSku(product, products) {
     const vendor = product.vendor.replace(/[\s\uFEFF\xA0]+/g, '').toUpperCase();
     const productName = product.productName;
     const color = product.color;
     const isFullSize = product.size !== "Premium Sample" && product.price > 0;
 
-    // Initialize vendor in skuCounter if not present
     if (!skuCounter[vendor]) {
-        skuCounter[vendor] = 0; // Start with 0 for each new vendor
+      skuCounter[vendor] = 0;
     }
 
-    // Ensure productColorSkuNumber is properly initialized for the productName
     if (!productColorSkuNumber[productName]) {
-        productColorSkuNumber[productName] = {};
+      productColorSkuNumber[productName] = {};
     }
 
-    // Ensure color is initialized for the productName
     if (productColorSkuNumber[productName][color] === undefined) {
-        // Increment SKU number for a new color variant or new product
-        skuCounter[vendor]++;
-        productColorSkuNumber[productName][color] = skuCounter[vendor];
+      skuCounter[vendor]++;
+      productColorSkuNumber[productName][color] = skuCounter[vendor];
     }
 
     let skuNumber = productColorSkuNumber[productName][color];
-  
     let fSnippet = '';
 
-    // Generate ranking for full-size products and add F snippet
     if (isFullSize) {
-        if (!fullSizeRankings[productName]) {
-            fullSizeRankings[productName] = {};
-        }
-        if (!fullSizeRankings[productName][color]) {
-            fullSizeRankings[productName][color] = getFullSizeRankings(products, productName, color);
-        }
+      if (!fullSizeRankings[productName]) {
+        fullSizeRankings[productName] = {};
+      }
+      if (!fullSizeRankings[productName][color]) {
+        fullSizeRankings[productName][color] = getFullSizeRankings(products, productName, color);
+      }
 
-        const productKey = `${productName}-${product.size}-${product.price}`;
-        const ranking = fullSizeRankings[productName][color][productKey];
-        const numberOfFullSizeVariants = Object.keys(fullSizeRankings[productName][color]).length;
+      const productKey = `${productName}-${product.size}-${product.price}`;
+      const ranking = fullSizeRankings[productName][color][productKey];
+      const numberOfFullSizeVariants = Object.keys(fullSizeRankings[productName][color]).length;
 
-        if (ranking && numberOfFullSizeVariants > 1) {
-            fSnippet = `F${ranking}-`;
-        }
+      if (ranking && numberOfFullSizeVariants > 1) {
+        fSnippet = `F${ranking}-`;
+      }
     }
 
     const skuNumberString = String(skuNumber).padStart(6, "0");
 
     if (product.size === "Premium Sample") {
-        return `SHELF-premium-demand-${vendor}-${skuNumberString}`;
+      return `SHELF-premium-demand-${vendor}-${skuNumberString}`;
     } else if (product.size === "Free Sample") {
-        return `SHELF-demand-${vendor}-${skuNumberString}`;
+      return `SHELF-demand-${vendor}-${skuNumberString}`;
     } else {
-        return `SHELF-${fSnippet}${vendor}-${skuNumberString}`;
+      return `SHELF-${fSnippet}${vendor}-${skuNumberString}`;
     }
-}
+  }
 
+  function getFullSizeRankings(products, productName, color) {
+    console.log(`Calculating rankings for ${productName} - ${color}`);
 
+    const fullSizeProducts = products.filter(p =>
+      p.productName === productName &&
+      p.color === color && 
+      p.size !== "Premium Sample" && p.size !== "Free Sample" &&
+      p.price > 0
+    );
 
-function getFullSizeRankings(products, productName, color) {
-  console.log(`Calculating rankings for ${productName} - ${color}`);
+    console.log(`Filtered full-size products:`, fullSizeProducts);
 
-  // Filter products to get only full-size variants of the specified product and color
-  const fullSizeProducts = products.filter(p => 
-    p.productName === productName &&
-    p.color === color && 
-    p.size !== "Premium Sample" && p.size !== "Free Sample" &&
-    p.price > 0
-  );
+    fullSizeProducts.sort((a, b) => b.price - a.price);
 
-  console.log(`Filtered full-size products:`, fullSizeProducts);
+    const rankings = {};
+    fullSizeProducts.forEach((product, index) => {
+      const productKey = `${product.productName}-${product.size}-${product.price}`;
+      rankings[productKey] = index + 1;
 
-  // Sort these products by price in descending order
-  fullSizeProducts.sort((a, b) => b.price - a.price);
+      console.log(`Ranking for ${productKey}: ${rankings[productKey]}`);
+    });
 
-  // Assign rankings based on sorted order
-  const rankings = {};
-  fullSizeProducts.forEach((product, index) => {
-    // Create a unique key for each product variant if needed
-    const productKey = `${product.productName}-${product.size}-${product.price}`;
-    rankings[productKey] = index + 1;
+    return rankings;
+  }
 
-    console.log(`Ranking for ${productKey}: ${rankings[productKey]}`);
-  });
-
-  return rankings;
-}
- 
   getElement("submitProduct").addEventListener("click", function () {
     const vendor = getElement("vendor").value;
     const product = getElement("product").value;
@@ -181,20 +142,27 @@ function getFullSizeRankings(products, productName, color) {
     const costInputs = Array.from(document.getElementsByName("cost"));
     const barcodeInputs = Array.from(document.getElementsByName("barcode"));
 
-    // Generate rows for each variant combination
+    let validSubmission = true;
+    let errorMessage = "";
+
     for (let i = 0; i < (colorInputs.length || 1); i++) {
       for (let j = 0; j < sizeInputs.length; j++) {
         const size = sizeInputs[j].value || "";
-        // const price = priceInputs[j].value || 0;
-        const cost = costInputs[j].value || 0;
+        const cost = parseFloat(costInputs[j].value) || 0;
         let price;
 
         if (size === 'Premium Sample') {
-            price = cost * 2;
+          price = cost * 2;
         } else {
-            price = parseFloat(priceInputs[j].value) || 0;
+          price = parseFloat(priceInputs[j].value) || 0;
         }
-        
+
+        if (size !== "Premium Sample" && size !== "Free Sample" && price < cost) {
+          validSubmission = false;
+          errorMessage = `Price for full-size item cannot be less than the cost. Error in size: ${size}, price: ${price}, cost: ${cost}`;
+          break;
+        }
+
         const barcode = barcodeInputs[j].value || "";
 
         const productData = {
@@ -207,46 +175,23 @@ function getFullSizeRankings(products, productName, color) {
           cost: cost,
           barcode: barcode,
         };
-        
+
         products.push(productData);
+      }
+
+      if (!validSubmission) {
+        break;
       }
     }
 
-    resetForm();
-    updateTable();
-  });
-
-  /*
-  getElement("downloadCSV").addEventListener("click", function () {
-    downloadCSV(products);
-  });
-
-  // Function to download the CSV file
-  function downloadCSV(data) {
-    const csv = convertToCSV(data);
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    if (link.download !== undefined) {
-      const url = URL.createObjectURL(blob);
-      link.setAttribute("href", url);
-      link.setAttribute("download", "products.csv");
-      link.style.visibility = "hidden";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+    if (validSubmission) {
+      resetForm();
+      updateTable();
+    } else {
+      alert(errorMessage);
     }
-  }
+  });
 
-  // Function to convert an array of objects to CSV format
-  function convertToCSV(data) {
-    const header = Object.keys(data[0]).join(",");
-    const csvRows = data.map((row) => Object.values(row).join(","));
-    return [header, ...csvRows].join("\n");
-  }
-
-*/
-
-  // Function to create input elements
   function createInput(type, name, placeholder) {
     const input = document.createElement("input");
     input.type = type;
@@ -255,9 +200,7 @@ function getFullSizeRankings(products, productName, color) {
     return input;
   }
 
-  // Function to reset the form
   function resetForm() {
-    // getElement("vendor").value = "";
     getElement("product").value = "";
     getElement("productType").value = "";
     colorVariantsContainer.innerHTML = "";
@@ -268,199 +211,156 @@ function getFullSizeRankings(products, productName, color) {
     });
   }
 
-function updateTable() {
-  submissionBody.innerHTML = "";
-  products.forEach((product, index) => {
+  function updateTable() {
+    submissionBody.innerHTML = "";
+    products.forEach((product, index) => {
+      const row = document.createElement("tr");
+
+      Object.keys(product).forEach((key) => {
+        const cell = document.createElement("td");
+        cell.contentEditable = "true";
+        cell.innerText = product[key] || "";
+
+        cell.addEventListener("input", function() {
+          products[index][key] = cell.innerText;
+        });
+
+        row.appendChild(cell);
+      });
+
+      addDeleteButtonToRow(row, index); 
+      submissionBody.appendChild(row);
+    });
+
+    submissionTable.style.display = "block";
+  }
+
+  const addBlankRowButton = document.getElementById("addBlankRowButton");
+  addBlankRowButton.addEventListener("click", function() {
+    event.preventDefault();
+    const blankProduct = {
+      vendor: "",
+      productName: "",
+      productType: "",
+      color: "",
+      size: "",
+      price: "",
+      cost: "",
+      barcode: "",
+      sku: ""
+    };
+
+    products.push(blankProduct);
+
     const row = document.createElement("tr");
-    
-    // Create individual cells
-    Object.keys(product).forEach((key) => {
+    Object.keys(blankProduct).forEach((key) => {
       const cell = document.createElement("td");
       cell.contentEditable = "true";
-      cell.innerText = product[key] || "";
-      
-      // Update 'products' array when the cell content changes
+      cell.innerText = "";
+
       cell.addEventListener("input", function() {
-        products[index][key] = cell.innerText;
+        blankProduct[key] = cell.innerText;
       });
 
       row.appendChild(cell);
     });
 
-    addDeleteButtonToRow(row, index); 
+    addDeleteButtonToRow(row, products.length - 1);
     submissionBody.appendChild(row);
   });
 
-  submissionTable.style.display = "block";
-}
-
-// Add "Add Blank Row" button
-const addBlankRowButton = document.getElementById("addBlankRowButton");
-addBlankRowButton.addEventListener("click", function() {
-  event.preventDefault();
-  // Create a blank product object with all keys but empty values
-  const blankProduct = {
-    vendor: "",
-    productName: "",
-    productType: "",
-    color: "",
-    size: "",
-    price: "",
-    cost: "",
-    barcode: "",
-    sku: ""
-  };
-  
-  // Add it to the products array
-  products.push(blankProduct);
-
-  // Create a new row and populate it with editable, empty cells
-  const row = document.createElement("tr");
-  Object.keys(blankProduct).forEach((key) => {
-    const cell = document.createElement("td");
-    cell.contentEditable = "true";
-    cell.innerText = "";
-    
-    // Update the 'products' array when the cell content changes
-    cell.addEventListener("input", function() {
-      blankProduct[key] = cell.innerText;
-    });
-
-    row.appendChild(cell);
-  });
-
-  addDeleteButtonToRow(row, products.length - 1);
-  // Append the row to the table
-  submissionBody.appendChild(row);
-
-});
- 
   // NEW CODE START SHOPIFY CSV
 
-  
-
   function downloadShopifyCSV() {
-    // Headers from the Shopify template
-    const headers = ["Handle", "Title", "Body (HTML)", "Vendor", "Product Category", "Type", "Tags",	"Published",	"Option1 Name",	"Option1 Value",	"Option2 Name",	"Option2 Value",	"Option3 Name",	"Option3 Value",	"Variant SKU",	"Variant Grams",	"Variant Inventory Tracker",	"Variant Inventory Qty",	"Variant Inventory Policy",	"Variant Fulfillment Service",	"Variant Price",	"Variant Compare At Price",	"Variant Requires Shipping",	"Variant Taxable",	"Variant Barcode",	"Image Src",	"Image Position",	"Image Alt Text",	"Gift Card",	"SEO Title",	"SEO Description",	"Google Shopping / Google Product Category",	"Google Shopping / Gender",	"Google Shopping / Age Group",	"Google Shopping / MPN",	"Google Shopping / AdWords Grouping",	"Google Shopping / AdWords Labels",	"Google Shopping / Condition",	"Google Shopping / Custom Product",	"Google Shopping / Custom Label 0",	"Google Shopping / Custom Label 1",	"Google Shopping / Custom Label 2",	"Google Shopping / Custom Label 3",	"Google Shopping / Custom Label 4",	"Variant Image",	"Variant Weight Unit",	"Variant Tax Code",	"Cost per item",	"Price / International",	"Compare At Price / International",	"Status"]; // List all headers here
+    const headers = ["Handle", "Title", "Body (HTML)", "Vendor", "Product Category", "Type", "Tags",	"Published",	"Option1 Name",	"Option1 Value",	"Option2 Name",	"Option2 Value",	"Option3 Name",	"Option3 Value",	"Variant SKU",	"Variant Grams",	"Variant Inventory Tracker",	"Variant Inventory Qty",	"Variant Inventory Policy",	"Variant Fulfillment Service",	"Variant Price",	"Variant Compare At Price",	"Variant Requires Shipping",	"Variant Taxable",	"Variant Barcode",	"Image Src",	"Image Position",	"Image Alt Text",	"Gift Card",	"SEO Title",	"SEO Description",	"Google Shopping / Google Product Category",	"Google Shopping / Gender",	"Google Shopping / Age Group",	"Google Shopping / MPN",	"Google Shopping / AdWords Grouping",	"Google Shopping / AdWords Labels",	"Google Shopping / Condition",	"Google Shopping / Custom Product",	"Google Shopping / Custom Label 0",	"Google Shopping / Custom Label 1",	"Google Shopping / Custom Label 2",	"Google Shopping / Custom Label 3",	"Google Shopping / Custom Label 4",	"Variant Image",	"Variant Weight Unit",	"Variant Tax Code",	"Cost per item",	"Price / International",	"Compare At Price / International",	"Status"];
 
-    // Hardcoded and dynamic values from the second row of the template
     const defaultValues = {
-        "Handle": "", // Leave blank or add logic if needed
-        "Title": (product) => product.productName,
-        "Body (HTML)": "", // Leave blank or add logic if needed
-        "Vendor": (product) => product.vendor,
-        "Product Category": "",
-        "Type": (product) => product.productType,
-        "Tags": (product) => {
-          const details = typeToDetailsMap[product.productType];
-          let tags = details ? details.tags : "";
-          // Check if product size is "Premium Sample" and append a snippet to tags
-          if (product.size === "Premium Sample") {
-              const deluxe = "premium";  // Replace with your actual snippet
-              tags = tags ? `${tags}, ${deluxe}` : deluxe;
-          }
-          return `"${tags}"`; // Return tags enclosed in quotes
+      "Handle": "",
+      "Title": (product) => product.productName,
+      "Body (HTML)": "",
+      "Vendor": (product) => product.vendor,
+      "Product Category": "",
+      "Type": (product) => product.productType,
+      "Tags": (product) => {
+        const details = typeToDetailsMap[product.productType];
+        let tags = details ? details.tags : "";
+        if (product.size === "Premium Sample") {
+          const deluxe = "premium";
+          tags = tags ? `${tags}, ${deluxe}` : deluxe;
+        }
+        return `"${tags}"`;
       },
-        "Published": "TRUE", 
-        "Option1 Name": (product) => product.color ? product.productName + " " + "Color" : "Size",
-        "Option1 Value": (product) => {
-          if (product.color) {
-              return product.color;
-          } else {
-             return product.size > 0 ? product.size + ' mL' : product.size;
-          }
-      },
-        "Option2 Name": (product) => product.color ? "Size" : "",
-        "Option2 Value": (product) => {
-          if (product.color) {
-            return product.size > 0 ? product.size + ' mL' : product.size;
-          }
-          return "";
-      },
-        "Option3 Name": "",
-        "Option3 Value": "",
-        "Variant SKU": (product) => product.sku,
-        "Variant Grams": (product) => typeof product.size === 'number' ? product.size : "",
-        "Variant Inventory Tracker": "Shopify",
-        "Variant Inventory Qty": "",
-        "Variant Inventory Policy": "deny", 
-        "Variant Fulfillment Service": "manual", 
-        "Variant Price": (product) => product.price, /*{
-          let basePrice = product.price;
-          if (product.size === 'Premium Sample') {
-            basePrice /= 2;
-            const remainder = basePrice % 1;
-            const adjustment = (remainder >= 0.75 || (remainder < 0.25 && remainder >= 0)) ? 0.99 : 0.49;
-            basePrice = Math.floor(basePrice) + adjustment;
-          }
-          return basePrice;
-        },*/
-        "Variant Compare At Price": (product) => product.size === "Premium Sample" ? product.price * 2 : null,
-        "Variant Requires Shipping": "TRUE", 
-        "Variant Taxable": "TRUE", 
-        "Variant Barcode": (product) => product.barcode,
-        "Image Src": "",
-        "Image Position": "",
-        "Image Alt Text": "",
-        "Gift Card": "",
-        "SEO Title": "",
-        "SEO Description": "",
-        "Google Shopping / Google Product Category": "",
-        "Google Shopping / Gender": "",
-        "Google Shopping / Age Group": "",
-        "Google Shopping / MPN": "",
-        "Google Shopping / AdWords Grouping": "",
-        "Google Shopping / AdWords Labels": "",
-        "Google Shopping / Condition": "",
-        "Google Shopping / Custom Product": "",
-        "Google Shopping / Custom Label 0": "",
-        "Google Shopping / Custom Label 1": "",
-        "Google Shopping / Custom Label 2": "",
-        "Google Shopping / Custom Label 3": "",
-        "Google Shopping / Custom Label 4": "",
-        "Variant Image": "",
-        "Variant Weight Unit": "",
-        "Variant Tax Code": "",
-        "Cost per item": (product) => product.cost,
-        "Price / International": "",
-        "Compare At Price / International": "",
-        "Status": "Draft",
-        
+      "Published": "TRUE",
+      "Option1 Name": (product) => product.color ? product.productName + " " + "Color" : "Size",
+      "Option1 Value": (product) => product.color ? product.color : product.size > 0 ? product.size + ' mL' : product.size,
+      "Option2 Name": (product) => product.color ? "Size" : "",
+      "Option2 Value": (product) => product.color ? product.size > 0 ? product.size + ' mL' : product.size : "",
+      "Option3 Name": "",
+      "Option3 Value": "",
+      "Variant SKU": (product) => product.sku,
+      "Variant Grams": (product) => typeof product.size === 'number' ? product.size : "",
+      "Variant Inventory Tracker": "Shopify",
+      "Variant Inventory Qty": "",
+      "Variant Inventory Policy": "deny",
+      "Variant Fulfillment Service": "manual",
+      "Variant Price": (product) => product.price,
+      "Variant Compare At Price": (product) => product.size === "Premium Sample" ? product.price * 2 : null,
+      "Variant Requires Shipping": "TRUE",
+      "Variant Taxable": "TRUE",
+      "Variant Barcode": (product) => product.barcode,
+      "Image Src": "",
+      "Image Position": "",
+      "Image Alt Text": "",
+      "Gift Card": "",
+      "SEO Title": "",
+      "SEO Description": "",
+      "Google Shopping / Google Product Category": "",
+      "Google Shopping / Gender": "",
+      "Google Shopping / Age Group": "",
+      "Google Shopping / MPN": "",
+      "Google Shopping / AdWords Grouping": "",
+      "Google Shopping / AdWords Labels": "",
+      "Google Shopping / Condition": "",
+      "Google Shopping / Custom Product": "",
+      "Google Shopping / Custom Label 0": "",
+      "Google Shopping / Custom Label 1": "",
+      "Google Shopping / Custom Label 2": "",
+      "Google Shopping / Custom Label 3": "",
+      "Google Shopping / Custom Label 4": "",
+      "Variant Image": "",
+      "Variant Weight Unit": "",
+      "Variant Tax Code": "",
+      "Cost per item": (product) => product.cost,
+      "Price / International": "",
+      "Compare At Price / International": "",
+      "Status": "Draft",
     };
 
-    // Convert products to CSV
     let csvContent = headers.join(",") + "\n";
 
-products.forEach(product => {
-    let row = headers.map(header => {
-        // Check if the default value is a function and call it with 'product'
+    products.forEach(product => {
+      let row = headers.map(header => {
         if (typeof defaultValues[header] === "function") {
-            return defaultValues[header](product);
+          return defaultValues[header](product);
         }
-        // Otherwise, use the hardcoded value or the value from the product
         return defaultValues[header] || product[header] || "";
-    });
-    
-        csvContent += row.join(",") + "\n";
+      });
+
+      csvContent += row.join(",") + "\n";
     });
 
-    // Create and download the CSV file
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    // link.download = "Shopify_Products.csv";
     const formattedVendor = products[0].vendor.replace(/[\s\uFEFF\xA0]+/g, '').replace(/[^a-zA-Z0-9]/g, '');
     link.download = `${formattedVendor}.csv`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-}
+  }
 
-// Add the event listener to your button
-document.getElementById("downloadShopifyCSV").addEventListener("click", downloadShopifyCSV);
-
+  document.getElementById("downloadShopifyCSV").addEventListener("click", downloadShopifyCSV);
 
   // NEW CODE SHOPIFY CSV END
-
 
 });
