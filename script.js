@@ -284,10 +284,19 @@ document.addEventListener("DOMContentLoaded", function () {
       "Tags": (product) => {
         const details = typeToDetailsMap[product.productType];
         let tags = details ? details.tags : "";
+
+        // Add "premium" tag for Premium Sample
         if (product.size === "Premium Sample") {
           const deluxe = "premium";
           tags = tags ? `${tags}, ${deluxe}` : deluxe;
         }
+
+        // Add "travel_size" tag if the title contains "mini"
+        if (product.productName.toLowerCase().includes("mini")) {
+          const travelSize = "travel_size";
+          tags = tags ? `${tags}, ${travelSize}` : travelSize;
+        }
+
         return `"${tags}"`;
       },
       "Published": "TRUE",
