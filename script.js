@@ -9,6 +9,17 @@ document.addEventListener("DOMContentLoaded", function () {
   const products = []; // Array to store product data
   let typeToDetailsMap = {}; // Initialize typeToDetailsMap
 
+  // Helper function to escape and enclose CSV values
+  function escapeCSVValue(value) {
+    if (typeof value === 'string') {
+      value = value.replace(/"/g, '""'); // Escape double quotes by doubling them
+      if (value.includes(',') || value.includes('\n')) {
+        value = `"${value}"`; // Enclose in double quotes if it contains a comma or a newline
+      }
+    }
+    return value;
+  }
+
   // PapaParse code to parse the CSV file and populate typeToDetailsMap
   Papa.parse('https://raw.githubusercontent.com/trev-airshop/https-trev-airshop.github.io/main/merchtypes.csv?token=GHSAT0AAAAAACKIJ7RCNELJD4JTAS5SNNEQZKS4YDA', {
     download: true,
@@ -376,11 +387,10 @@ document.addEventListener("DOMContentLoaded", function () {
     products.forEach(product => {
       let row = headers.map(header => {
         if (typeof defaultValues[header] === "function") {
-          return defaultValues[header](product);
+          return escapeCSVValue(defaultValues[header](product)); // defaultValues[header](product);
         }
-        return defaultValues[header] || product[header] || "";
+        return escapeCSVValue(defaultValues[header] || product[header] || ""); // defaultValues[header] || product[header] || "";
       });
-
       csvContent += row.join(",") + "\n";
     });
 
