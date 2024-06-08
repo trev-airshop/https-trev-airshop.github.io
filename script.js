@@ -7,6 +7,24 @@ document.addEventListener("DOMContentLoaded", function () {
   const submissionTable = getElement("submissionTable");
   const submissionBody = getElement("submissionBody");
   const products = []; // Array to store product data
+  let typeToDetailsMap = {}; // Initialize typeToDetailsMap
+
+  // PapaParse code to parse the CSV file and populate typeToDetailsMap
+  Papa.parse('https://raw.githubusercontent.com/trev-airshop/https-trev-airshop.github.io/main/merchtypes.csv?token=GHSAT0AAAAAACKIJ7RCNELJD4JTAS5SNNEQZKS4YDA', {
+    download: true,
+    header: true,
+    transformHeader: header => header.trim(),
+    complete: function(results) {
+      results.data.forEach(row => {
+        const type = row['Type'];
+        const category = row['Category'];
+        const tags = row['Tags'];
+        typeToDetailsMap[type] = { category, tags };
+      });
+      console.log("Type to Details Map:", typeToDetailsMap);
+    }
+  });
+
 
   addColorVariantButton.addEventListener("click", function () {
     const colorInput = createInput("text", "color", "Color");
