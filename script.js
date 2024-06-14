@@ -332,7 +332,7 @@ document.addEventListener("DOMContentLoaded", function () {
           tags.push("travel_size");
         }
 
-        return tags.join(','); // Return tags as a comma-separated string without additional quotes
+        return tags.join(', '); // Return tags as a comma-separated string without additional quotes
       },
       "Published": "TRUE",
       "Option1 Name": (product) => product.color ? product.productName + " " + "Color" : "Size",
