@@ -334,7 +334,7 @@ document.addEventListener("DOMContentLoaded", function () {
           tags = tags ? `${tags}, ${travelSize}` : travelSize;
         }
 
-        return `"${tags}"`;
+        return tags;
       },
       "Published": "TRUE",
       "Option1 Name": (product) => product.color ? product.productName + " " + "Color" : "Size",
