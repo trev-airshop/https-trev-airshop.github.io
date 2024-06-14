@@ -320,21 +320,19 @@ document.addEventListener("DOMContentLoaded", function () {
       "Type": (product) => product.productType,
       "Tags": (product) => {
         const details = typeToDetailsMap[product.productType];
-        let tags = details ? details.tags : "";
+        let tags = details ? details.tags.split(',') : [];
 
         // Add "premium" tag for products with Premium Sample variants
         if (premiumProducts.has(product.productName)) {
-          const deluxe = "premium";
-          tags = tags ? `${tags}, ${deluxe}` : deluxe;
+          tags.push("premium");
         }
 
         // Add "travel_size" tag if the title contains "mini"
         if (product.productName.toLowerCase().includes("mini")) {
-          const travelSize = "travel_size";
-          tags = tags ? `${tags}, ${travelSize}` : travelSize;
+          tags.push("travel_size");
         }
 
-        return tags;
+        return tags.join(','); // Return tags as a comma-separated string without additional quotes
       },
       "Published": "TRUE",
       "Option1 Name": (product) => product.color ? product.productName + " " + "Color" : "Size",
