@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const fullSizeProducts = products.filter(p =>
       p.productName === productName &&
       p.color === color && 
-      p.size !== "Premium Sample" && p.size !== "Free Sample" &&
+      p.size !== "Premium Sample" && p.size !== "Free Sample" && p.size !== "Single Use Sample"  &&
       p.price > 0
     );
 
