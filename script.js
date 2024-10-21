@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const vendor = product.vendor.replace(/[\s\uFEFF\xA0]+/g, '').toUpperCase();
     const productName = product.productName;
     const color = product.color;
-    const isFullSize = product.size !== "Premium Sample" && product.price > 0;
+    const isFullSize = product.size !== "Premium Sample" && product.size !== "Single Use Sample" && product.price > 0;
 
     if (!skuCounter[vendor]) {
       skuCounter[vendor] = 0;
@@ -127,13 +127,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const skuNumberString = String(skuNumber).padStart(6, "0");
 
     if (product.size === "Premium Sample") {
-      return `SHELF-premium-demand-${vendor}-${skuNumberString}`;
+        return `SHELF-premium-demand-${vendor}-${skuNumberString}`;
+    } else if (product.size === "Single Use Sample") {
+        return `SHELF-single-use-demand-${vendor}-${skuNumberString}`;
     } else if (product.size === "Free Sample") {
-      return `SHELF-demand-${vendor}-${skuNumberString}`;
+        return `SHELF-demand-${vendor}-${skuNumberString}`;
     } else {
-      return `SHELF-${fSnippet}${vendor}-${skuNumberString}`;
+        return `SHELF-${fSnippet}${vendor}-${skuNumberString}`;
     }
-  }
+}
 
   function getFullSizeRankings(products, productName, color) {
     console.log(`Calculating rankings for ${productName} - ${color}`);
