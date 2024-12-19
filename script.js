@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // PapaParse code to parse the CSV file and populate typeToDetailsMap
+  // Updated on 12/18/24 to use simplified raw URL without token.
   Papa.parse('https://raw.githubusercontent.com/trev-airshop/https-trev-airshop.github.io/main/merchtypes.csv', {
     download: true,
     header: true,
