@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const vendor = product.vendor.replace(/[\s\uFEFF\xA0]+/g, '').toUpperCase();
     const productName = product.productName;
     const color = product.color;
-    const isFullSize = product.size !== "Premium Sample" && product.size !== "Single Use Sample" && product.price > 0;
+    const isFullSize = product.size !== "Mini" && product.size !== "Premium Sample" && product.size !== "Single Use Sample" && product.price > 0;
 
     if (!skuCounter[vendor]) {
       skuCounter[vendor] = 0;
@@ -133,6 +133,8 @@ document.addEventListener("DOMContentLoaded", function () {
         return `SHELF-single-use-demand-${vendor}-${skuNumberString}`;
     } else if (product.size === "Free Sample") {
         return `SHELF-demand-${vendor}-${skuNumberString}`;
+    } else if (product.size === "Mini") {
+        return `SHELF-mini-${vendor}-${skuNumberString}`;
     } else {
         return `SHELF-${fSnippet}${vendor}-${skuNumberString}`;
     }
@@ -145,6 +147,7 @@ document.addEventListener("DOMContentLoaded", function () {
       p.productName === productName &&
       p.color === color &&
       !p.size.toLowerCase().includes("sample") &&
+      !p.size.toLowerCase().includes("mini") &&
       p.price > 0
     );
 
